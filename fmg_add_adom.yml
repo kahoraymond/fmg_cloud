@@ -6,7 +6,7 @@
 
   tasks:
 
-    - name: add adom {{adom}}
+    - name: add adom
       fmgr_generic:
         method: add
         params:

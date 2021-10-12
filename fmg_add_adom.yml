@@ -1,0 +1,19 @@
+- name: 'Create adom and device templates for FSW,FAP,SDWAN'
+  hosts:  all
+  gather_facts: no
+  connection: httpapi
+  collections:
+    - fortinet.fortimanager
+
+  tasks:
+
+    - name: add adom {{adom}}
+      fmgr_generic:
+        method: add
+        params:
+          - url: '/dvmdb/adom'
+            data:
+              - name: 'testing'
+                flags: [ central_sdwan, no_vpn_console ] # no_vpn_console, 
+                os_ver: '6.0'
+                mr: 4

@@ -1,5 +1,4 @@
-- name: 'Create adom and device templates for FSW,FAP,SDWAN'
-  hosts:  all
+- hosts:  all
   gather_facts: no
   connection: httpapi
   collections:

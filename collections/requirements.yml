@@ -1,1 +1,3 @@
-sdasdsd
+---
+collections:
+- name: fortinet.fortimanager

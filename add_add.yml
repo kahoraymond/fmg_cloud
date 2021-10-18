@@ -12,7 +12,7 @@
       vdom:  "{{ vdom }}"
       state: "present"
       firewall_address:
-        name: "{{ new_address }}"
+        name: "{{ new_add_name }}"
         type: "ipmask"
         subnet: "{{ new_add_subnet }}"
         visibility: "enable"

@@ -3,3 +3,4 @@ fortimanager01 ansible_host=192.168.1.201 ansible_user="apiuser" ansible_passwor
 
 [fortimanagers:vars]
 ansible_network_os=fortinet.fortimanager.fortimanager
+ansible_python_interpreter: ${VITUAL_ENV}/bin/python

@@ -13,5 +13,5 @@
       firewall_address:
         name: "{{ add_name }}"
         type: "ipmask"
-        subnet: "99.10.10.10 255.255.255.255"
+        subnet: "{{ add_subne }}"
         visibility: "enable"

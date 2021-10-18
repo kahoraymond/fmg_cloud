@@ -2,4 +2,4 @@
 fortimanager01 ansible_host=192.168.1.201 ansible_user="admin" ansible_password="fortinet"
 
 [fortimanagers:vars]
-ansible_network_os=fortinet.fortimanager.fortimanagerml
+ansible_network_os=fortinet.fortimanager.fortimanager

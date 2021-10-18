@@ -1,7 +1,6 @@
 - hosts: all
   connection: httpapi
-  collections:
-    - fortinet.fortinet.fortios
+
   vars:
     vdom: "root"
     ansible_httpapi_use_ssl: yes
@@ -13,7 +12,7 @@
       vdom:  "{{ vdom }}"
       state: "present"
       firewall_address:
-        name: " new_test123"
+        name: "new_test123"
         type: "ipmask"
         subnet: "99.99.99.0 255.255.255.0"
         visibility: "enable"

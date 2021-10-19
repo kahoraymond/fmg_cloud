@@ -6,9 +6,9 @@
      ansible_httpapi_use_ssl: True
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
-    adom: 'BP_ZTP'
-    site_id: 'BP_Branch1'
-    fgt: '{{site_id}}'
+     adom: 'BP_ZTP'
+     site_id: 'BP_Branch1'
+     fgt: '{{site_id}}'
   tasks:
 
     - name: del device {{adom}} / {{fgt}}

@@ -1,15 +1,11 @@
-- name: 'Acme ZTP demo: undo setup: delete device, delete adom'
-  hosts: all
-  gather_facts: no
-  connection: httpapi
+- hosts: fortimanagers
   collections:
     - fortinet.fortimanager
+  connection: httpapi
   vars:
-    #ansible_httpapi_use_ssl: True
-    #ansible_httpapi_validate_certs: False
-    #ansible_httpapi_port: 10406
-
-    # .:hosts.yml tower:project
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
     adom: 'BP_ZTP'
     site_id: 'BP_Branch1'
     fgt: '{{site_id}}'

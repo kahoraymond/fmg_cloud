@@ -1,41 +1,11 @@
-# look for do:undo: before delivery
-- name: 'Create model devices: FGT,FSW,FAP,FEX and dynamic mappings; install PP'
-  hosts:  all
-  gather_facts: no
-  connection: httpapi
+- hosts: fortimanagers
   collections:
     - fortinet.fortimanager
+  connection: httpapi
   vars:
-    adom: 'BP_ZTP'
-    site_id: 'BP_Branch1'
-    fgt_sn: FGT61FTK20026725
-    fsw_sn: S108EN5920009565
-    fap_sn: FP221E5519017348
-    fex_sn: FX04DA5918008559
-    geo_zone: 'NA'
-    #adom: 'Acme'
-    fgt:  '{{site_id}}'
-    fgt_pw: 'fortinet' #'fortipocadmin'
-    fsw: 'FSW108E'
-    fsw_nm: '{{fsw}}'
-    fsw_tpt: '{{fsw}}'
-    fap: 'FAP221E'
-    fap_prof: 'AP-P'
-    fex: 'FXT40D'
-    sdwan: 'SDWan'
-    sdwan_tpt: '{{sdwan}}_template'
-    ipsec_tpt: 'IPsec_template'
-    ipsec_tun: 'ipsec_tun'
-    script_dev: 'config_modeldevs'
-    pos_subnet: '192.168.100'
-    securewlan_subnet: '192.168.110'
-    backoffice_subnet: '192.168.120'
-    iot_subnet: '192.168.130'
-    guestwlan_subnet: '192.168.200'
-    address: 34 Longfellow Drive Franklin MA
-    hostname: '{{fgt}}'
-    script_dynmap: 'config_dynmap'
-    polpkg: 'PP_{{geo_zone}}'
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
 
   tasks:
 

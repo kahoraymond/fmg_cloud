@@ -5,34 +5,6 @@
   collections:
     - fortinet.fortimanager
   vars:
-    adom: 'BP_ZTP'
-    site_id: 'BP_Branch1'
-    fgt_sn: FGT61FTK20026725
-    fsw_sn: S108EN5920009565
-    fap_sn: FP221E5519017348
-    fex_sn: FX04DA5918008559
-    geo_zone: 'NA'
-    #adom: 'Acme'
-    fsw: 'FSW108E'
-    fsw_nm: '{{fsw}}'
-    fsw_tpt: '{{fsw}}'
-    fap: 'FAP221E'
-    fap_prof: 'AP-P'
-    sdwan: 'SDWan'
-    sdwan_tpt: '{{sdwan}}_template'
-    ipsec_tpt: 'IPsec_template'
-    ipsec_tun: 'ipsec_tun'
-    fex: 'FXT40D'
-    pos_subnet: '192.168.100'
-    securewlan_subnet: '192.168.110'
-    backoffice_subnet: '192.168.120'
-    iot_subnet: '192.168.130'
-    guestwlan_subnet: '192.168.200'
-    address: Sugarloaf, FL
-    script_adom: 'prep_adom'
-    polpkg: 'PP_{{geo_zone}}'
-
-
 
   tasks:
 

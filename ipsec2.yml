@@ -1,25 +1,11 @@
-- name: 'Create IPsec template, dyn intf map, policies; install to model device'
-  hosts:  all
-  gather_facts: no
-  connection: httpapi
+- hosts: fortimanagers
   collections:
     - fortinet.fortimanager
+  connection: httpapi
   vars:
-    adom: 'BP_ZTP'
-    site_id: 'BP_Branch1'
-    fgt_sn: FGT61FTK20026725
-    fsw_sn: S108EN5920009565
-    fap_sn: FP221E5519017348
-    fex_sn: FX04DA5918008559
-    geo_zone: 'NA'
-    #adom: 'Acme'
-    fgt:  '{{site_id}}'
-    ipsec_tpt: 'IPsec_template'
-    # Manually maintain ipsec_tun because value: field in tunnel request does not handle
-    # ansible variables
-    ipsec_tun: 'ipsec_tun'
-    polpkg: 'PP_{{geo_zone}}'
-    ipsec_adom_script: 'ipsec_adom_script'
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
 
   tasks:
 

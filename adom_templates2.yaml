@@ -1,11 +1,11 @@
-- name: 'Create adom and device templates for FSW,FAP,SDWAN'
-  hosts:  all
-  gather_facts: no
-  connection: httpapi
+- hosts: fortimanagers
   collections:
     - fortinet.fortimanager
+  connection: httpapi
   vars:
-
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
   tasks:
 
     - name: add adom {{adom}}

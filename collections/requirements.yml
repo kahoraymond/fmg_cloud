@@ -1,0 +1,3 @@
+collections:
+ - name:fortinet.fortimanager
+source: https://galaxy.ansible.com

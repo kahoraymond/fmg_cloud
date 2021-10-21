@@ -21,8 +21,6 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
      
-     
-  tasks:
    - name: Configure IPv4 addresses.
      fmgr_firewall_address:
         bypass_validation: False

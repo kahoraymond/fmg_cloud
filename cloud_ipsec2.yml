@@ -20,7 +20,7 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
-     
+
 ### IPsec template
 #    - name: delete IPsec template
 #      fmgr_generic:
@@ -123,7 +123,7 @@
 ### IPsec
     - name: assign IPsec template to device {{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+      forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/template/adom/{{adom}}'
@@ -156,7 +156,6 @@
 
     - name: Wait for device install to task
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -231,7 +230,6 @@
 
     - name: wait for run script on adom task
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:

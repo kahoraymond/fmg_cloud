@@ -20,8 +20,6 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
-   
-  tasks:
 
     - name: del device root / {{fgt}}
       fmgr_generic:

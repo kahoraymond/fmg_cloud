@@ -1,0 +1,41 @@
+- hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
+     FORTICLOUD_APIID: '7F217031-9D17-48DB-9D2F-5B45E4761F01'
+     FORTICLOUD_PASSWD: 'c12659598d8f4db90b6998759e58cd92!1Aa'
+     
+  tasks:
+   - name: Show facts
+     debug:
+       var: ansible_facts
+   - name: Generate Access Token From FortiCloud Auth Server.
+     uri:
+       url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
+       method: POST
+       body_format: json
+       return_content: true
+       headers:
+         Content-Type: application/json
+       body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
+     register: tokeninfo
+     
+     
+   - name: Interface configuration.
+         fmgr_firewall_address:
+        adom: root
+        state: present
+        enable_log: true
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        firewall_address:
+          name: Win11
+          comment: from Ansible
+          organization: Fortinet
+          start-ip: 192.168.1.5
+          end-ip: 192.168.1.11
+          type: iprange
+          associated-interface: any

@@ -26,7 +26,7 @@
      
      
    - name: Interface configuration.
-         fmgr_firewall_address:
+        fmgr_firewall_address:
         adom: root
         state: present
         enable_log: true

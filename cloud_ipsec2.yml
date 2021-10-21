@@ -1,4 +1,4 @@
-- hosts: fortimanagers
+- hosts: all
   collections:
     - fortinet.fortimanager
   connection: httpapi
@@ -6,9 +6,21 @@
      ansible_httpapi_use_ssl: True
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
-
+     FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
+     FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
+   
   tasks:
-
+   - name: Generate Access Token From FortiCloud Auth Server.
+     uri:
+       url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
+       method: POST
+       body_format: json
+       return_content: true
+       headers:
+         Content-Type: application/json
+       body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
+     register: tokeninfo
+     
 ### IPsec template
 #    - name: delete IPsec template
 #      fmgr_generic:
@@ -19,6 +31,7 @@
 
     - name: make IPsec template
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/template/adom/{{adom}}'
@@ -32,6 +45,7 @@
 
     - name: configure IPsec template tunnel
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/config/adom/{{adom}}/template/{{ipsec_tpt}}/device/template/widget/ipsec/action-list'
@@ -109,6 +123,7 @@
 ### IPsec
     - name: assign IPsec template to device {{fgt}}
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/template/adom/{{adom}}'
@@ -126,6 +141,7 @@
 
     - name: Install template to model dev {{fgt}}
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/securityconsole/install/device'
@@ -140,6 +156,7 @@
 
     - name: Wait for device install to task
       fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -153,6 +170,7 @@
 ### do adom now, dyn_intf, policies -----------------------------------------------
     - name: Create script {{ipsec_adom_script}} to configure adom {{adom}}
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/dvmdb/adom/{{adom}}/script'
@@ -200,6 +218,7 @@
 
     - name: run script {{ipsec_adom_script}} on adom {{adom}}
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/dvmdb/adom/{{adom}}/script/execute'
@@ -212,6 +231,7 @@
 
     - name: wait for run script on adom task
       fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -226,6 +246,7 @@
 
     - name: Install polpkg {{polpkg}} to model dev {{fgt}}
       fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/securityconsole/install/package'
@@ -242,6 +263,7 @@
 
     - name: Wait for install polpkg to model dev task
       fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:

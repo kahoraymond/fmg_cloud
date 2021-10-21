@@ -21,36 +21,36 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
      
-    - name: create policy package {{polpkg}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set
-        params:
-          - url: '/pm/pkg/adom/{{adom}}'
-            data:
-              - name: '{{polpkg}}'
-                type: pkg
-                package_setting:
-                  central-nat: disable
+   - name: create policy package {{polpkg}}
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: set
+       params:
+         - url: '/pm/pkg/adom/{{adom}}'
+           data:
+             - name: '{{polpkg}}'
+               type: pkg
+               package_setting:
+                 central-nat: disable
+                 
+   - name: delete polpkg 'default'
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: delete
+       params:
+         - url: '/pm/pkg/adom/{{adom}}/default'
 
-    - name: delete polpkg 'default'
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: delete
-        params:
-          - url: '/pm/pkg/adom/{{adom}}/default'
-
-    - name: create script {{script_adom}} to configure adom {{adom}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script'
-            data:
-              - name: '{{script_adom}}'
-                target: adom_database
-                type: cli
-                content: |
+   - name: create script {{script_adom}} to configure adom {{adom}}
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: set
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script'
+           data:
+             - name: '{{script_adom}}'
+               target: adom_database
+               type: cli
+               content: |
                   ### FSW
                   config fsp vlan
                       edit "POS"

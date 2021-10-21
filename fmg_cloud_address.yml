@@ -20,17 +20,17 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
      
-   - name: Configure IPv4 addresses.
-     fmgr_firewall_address:
-       adom: root
-       state: present
-       enable_log: true
-       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-       firewall_address:
-         name: Win11
-         comment: from Ansible
-         organization: Fortinet
-         start-ip: 192.168.1.5
-         end-ip: 192.168.1.11
-         type: iprange
-         associated-interface: any
+    - name: Configure IPv4 addresses.
+      fmgr_firewall_address:
+        adom: root
+        state: present
+        enable_log: true
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        firewall_address:
+          name: Win11
+          comment: from Ansible
+          organization: Fortinet
+          start-ip: 192.168.1.5
+          end-ip: 192.168.1.11
+          type: iprange
+          associated-interface: any

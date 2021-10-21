@@ -1,5 +1,3 @@
-37 lines (35 sloc)  1.19 KB
-   
 - hosts: all
   collections:
     - fortinet.fortimanager

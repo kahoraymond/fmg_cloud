@@ -21,14 +21,14 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
      
-   - name: Configure IPv4 addresses.
-     fmgr_firewall_address:
-        bypass_validation: False
-        adom: root
-        state: present
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        firewall_address:
-           allow-routing: disable
-           associated-interface: any
-           name: 'ansible-test'
-           visibility: disable
+
+   - name: del device {{adom}} / {{fgt}}
+      fmgr_generic:
+      forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/dvm/cmd/del/device'
+            data:
+              adom: '{{adom}}'
+              device: '{{fgt}}'
+      ignore_errors: yes

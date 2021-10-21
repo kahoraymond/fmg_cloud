@@ -20,3 +20,17 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
+     
+     
+  tasks:
+   - name: Configure IPv4 addresses.
+     fmgr_firewall_address:
+        bypass_validation: False
+        adom: root
+        state: present
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        firewall_address:
+           allow-routing: disable
+           associated-interface: any
+           name: 'ansible-test'
+           visibility: disable

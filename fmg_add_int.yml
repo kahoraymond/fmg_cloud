@@ -7,6 +7,9 @@
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
   tasks:
+   - name: Show facts
+     debug:
+       var: ansible_facts
    - name: Interface configuration.
      fmgr_system_interface:
         bypass_validation: False

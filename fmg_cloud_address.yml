@@ -9,6 +9,7 @@
      FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
      FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
    
+tasks:
    - name: Generate Access Token From FortiCloud Auth Server.
      uri:
        url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
@@ -19,9 +20,8 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
-     
-    - name: Configure IPv4 addresses.
-      fmgr_firewall_address:
+   - name: Configure IPv4 addresses.
+     fmgr_firewall_address:
         adom: root
         state: present
         enable_log: true
@@ -34,3 +34,4 @@
           end-ip: 192.168.1.11
           type: iprange
           associated-interface: any
+$ansible-playbook -i hosts -vvv fmgr_firewall_address2.yml

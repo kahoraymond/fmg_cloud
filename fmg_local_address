@@ -1,0 +1,23 @@
+- hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
+     
+  tasks:
+   - name: Configure IPv4 addresses.
+     fmgr_firewall_address:
+       adom: root
+       state: present
+       enable_log: true
+       firewall_address:
+         name: Win11
+         comment: from Ansible
+         organization: Fortinet
+         start-ip: 192.168.1.5
+         end-ip: 192.168.1.11
+         type: iprange
+         associated-interface: any

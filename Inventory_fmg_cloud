@@ -1,5 +1,5 @@
 [fortimanagers]
-fortimanager01 ansible_host=192.168.1.201 ansible_user="apiuser" ansible_password="fortinet"
+fortimanager01 ansible_host=https://429794.ca-west-1.fortimanager.forticloud.com/
 
 [fortimanagers:vars]
 ansible_network_os=fortinet.fortimanager.fortimanager

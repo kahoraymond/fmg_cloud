@@ -25,9 +25,9 @@
 #
     - name: create policy package {{polpkg}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/pm/pkg/adom/{{adom}}'
             data:
               - name: '{{polpkg}}'
@@ -37,16 +37,16 @@
 
     - name: delete polpkg 'default'
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: delete
         params:
+           forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/pm/pkg/adom/{{adom}}/default'
 
     - name: create script {{script_adom}} to configure adom {{adom}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/dvmdb/adom/{{adom}}/script'
             data:
               - name: '{{script_adom}}'
@@ -920,9 +920,9 @@
 
     - name: run script {{script_adom}} on adom {{adom}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/dvmdb/adom/{{adom}}/script/execute'
             data:
               adom: '{{adom}}'
@@ -946,9 +946,9 @@
 
     - name: make SDWAN template
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/pm/wanprof/adom/{{adom}}'
             data:
               - name: '{{sdwan_tpt}}'
@@ -956,9 +956,9 @@
 
     - name: set SDWAN template fields
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
           - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
             data:
               members:

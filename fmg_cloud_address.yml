@@ -8,11 +8,7 @@
      ansible_httpapi_port: 443
      FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
      FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
-     
-  tasks:
-   - name: Show facts
-     debug:
-       var: ansible_facts
+   
    - name: Generate Access Token From FortiCloud Auth Server.
      uri:
        url: https://customerapiauth.fortinet.com/api/v1/oauth/token/

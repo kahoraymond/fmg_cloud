@@ -34,4 +34,3 @@
           end-ip: 192.168.1.11
           type: iprange
           associated-interface: any
-$ansible-playbook -i hosts -vvv fmgr_firewall_address2.yml

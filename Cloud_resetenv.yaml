@@ -20,14 +20,13 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
-
-    - name: del Fortigate
-      fmgr_generic:
-        method: exec
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        params:
-          - url: '/dvm/cmd/del/device'
-            data:
-              adom: root
-              device: '{{fgt}}'
-      ignore_errors: yes
+   - name: del deice {{fgt}}
+    fmgr_generic:
+       method: exec
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       params:
+         - url: '/dvm/cmd/del/device'
+           data:
+             adom: root
+             device: '{{fgt}}'
+       ignore_errors: yes

@@ -24,7 +24,7 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
      
-   - name: Interface configuration.
+   - name: Configure IPv4 addresses.
      fmgr_firewall_address:
        adom: root
        state: present

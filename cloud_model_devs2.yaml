@@ -10,22 +10,21 @@
      FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
    
   tasks:
-   - name: Generate Access Token From FortiCloud Auth Server.
-     uri:
-       url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
-       method: POST
-       body_format: json
-       return_content: true
-       headers:
-         Content-Type: application/json
-       body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
-     register: tokeninfo
+    - name: Generate Access Token From FortiCloud Auth Server.
+      uri:
+        url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
+        method: POST
+        body_format: json
+        return_content: true
+        headers:
+          Content-Type: application/json
+        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
+      register: tokeninfo
 #
 ## add model device
 #
     - name: Add model device {{adom}}/{{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         #bypass_validation: True
         params:
@@ -52,7 +51,6 @@
 
     - name: Wait for add device task
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -66,7 +64,6 @@
       #work-around mantis 0605560 : set flags.linked_to_model
     - name: Set auto-link mode on model device
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
           - url: '/dvmdb/adom/{{adom}}/device/{{fgt}}'
@@ -75,7 +72,6 @@
 #------------------------------------------------------------------
     - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
@@ -86,7 +82,6 @@
 #------------------------------------------------------------------
     - name: Create script {{script_dev}} to config model dev {{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/dvmdb/adom/{{adom}}/script'
@@ -693,7 +688,6 @@
 
     - name: Run script {{script_dev}} on model dev {{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/dvmdb/adom/{{adom}}/script/execute'
@@ -708,7 +702,6 @@
 
     - name: Wait for run script on model device task
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -722,7 +715,6 @@
 # run on adom -----------------------------------------------
     - name: Create script {{script_dynmap}} to configure adom {{adom}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/dvmdb/adom/{{adom}}/script'
@@ -939,7 +931,6 @@
 
     - name: Run script {{script_dynmap}} on adom {{adom}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/dvmdb/adom/{{adom}}/script/execute'
@@ -952,7 +943,6 @@
 
     - name: Wait for run script {{script_dynmap}} on adom {{adom}}
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:
@@ -967,7 +957,6 @@
 
     - name: Create model FSW
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set # update add
         params:
           - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch'
@@ -984,7 +973,6 @@
 
     - name: Assign device and template to model FSW
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
           - url: "/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}"
@@ -999,7 +987,6 @@
 ### FAP -------------------------------------------------------
     - name: Create model FAP
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: add
         params:
           - url: '/pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp'
@@ -1018,7 +1005,6 @@
 
     - name: On model AP, set device mapping to {{fgt}} and template to {{fap_prof}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
           - url: '/pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{fap_sn}}'
@@ -1037,7 +1023,6 @@
 ### SDWAN -------------------------------------------------------
     - name: Assign {{fgt}} to {{sdwan_tpt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
           - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
@@ -1054,7 +1039,6 @@
 
     - name: Install polpkg {{polpkg}} to model dev {{fgt}}
       fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
           - url: '/securityconsole/install/package'
@@ -1071,7 +1055,6 @@
 
     - name: Wait for install polpkg to model dev task
       fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
             selector: 'task_task'
             params:

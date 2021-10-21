@@ -22,7 +22,7 @@
      register: tokeninfo
    - name: del deice {{fgt}}
     fmgr_generic:
-       method: exec
+       method: execv
        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        params:
          - url: '/dvm/cmd/del/device'

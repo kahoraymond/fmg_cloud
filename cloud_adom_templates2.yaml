@@ -59,11 +59,11 @@
        method: set
        params:
          - url: '/dvmdb/adom/{{adom}}/script'
-            data:
-              - name: '{{script_adom}}'
-                target: adom_database
-                type: cli
-                content: |
+           data:
+             - name: '{{script_adom}}'
+               target: adom_database
+               type: cli
+               content: |
                   ### FSW
                   config fsp vlan
                       edit "POS"

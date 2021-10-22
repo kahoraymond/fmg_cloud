@@ -28,7 +28,7 @@
         enable_log: true
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         firewall_address:
-          name: Win11
+          name: Win11b
           comment: from Ansible
           organization: Fortinet
           start-ip: 192.168.1.5

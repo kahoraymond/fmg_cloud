@@ -36,15 +36,15 @@
           type: iprange
           associated-interface: any
 
-    - name: create policy package {{polpkg}}
-      fmgr_generic:
-         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-         method: set
-         params:
-           - url: '/pm/pkg/adom/{{adom}}'
-             data:
-               - name: '{{polpkg}}'
-                 type: pkg
-                 package_setting:
-                   central-nat: disable
+   - name: create policy package {{polpkg}}
+     fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/pm/pkg/adom/{{adom}}'
+            data:
+              - name: '{{polpkg}}'
+                type: pkg
+                package_setting:
+                  central-nat: disable
     

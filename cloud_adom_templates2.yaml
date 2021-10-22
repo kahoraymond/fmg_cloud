@@ -35,3 +35,15 @@
           end-ip: 192.168.1.11
           type: iprange
           associated-interface: any
+          
+     - name: create policy package {{polpkg}}
+      fmgr_generic:
+        method: set
+        params:
+          - url: '/pm/pkg/adom/{{adom}}'
+            data:
+              - name: '{{polpkg}}'
+                type: pkg
+                package_setting:
+                  central-nat: disable
+    

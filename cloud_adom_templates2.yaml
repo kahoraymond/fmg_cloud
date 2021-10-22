@@ -36,7 +36,7 @@
           type: iprange
           associated-interface: any
           
-     - name: create policy package {{polpkg}}
+    - name: create policy package {{polpkg}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set

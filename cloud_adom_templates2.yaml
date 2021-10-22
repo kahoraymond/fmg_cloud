@@ -47,18 +47,18 @@
                 type: pkg
                 package_setting:
                   central-nat: disable
-  
-    - name: delete polpkg 'default'
-      fmgr_generic:
-        method: delete
-        params:
-          - url: '/pm/pkg/adom/{{adom}}/default'
+   
+   - name: delete polpkg 'default'
+     fmgr_generic:
+       method: delete
+       params:
+         - url: '/pm/pkg/adom/{{adom}}/default'
 
-    - name: create script {{script_adom}} to configure adom {{adom}}
-      fmgr_generic:
-        method: set
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script'
+   - name: create script {{script_adom}} to configure adom {{adom}}
+     fmgr_generic:
+       method: set
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script'
             data:
               - name: '{{script_adom}}'
                 target: adom_database
@@ -921,101 +921,100 @@
                           set global-label "Guest Access"
                       next
                   end
-    - name: run script {{script_adom}} on adom {{adom}}
-      fmgr_generic:
-        method: exec
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script/execute'
-            data:
-              adom: '{{adom}}'
-              package: '{{polpkg}}'
-              script: '{{script_adom}}'
+   - name: run script {{script_adom}} on adom {{adom}}
+     fmgr_generic:
+       method: exec
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script/execute'
+           data:
+             adom: '{{adom}}'
+             package: '{{polpkg}}'
+             script: '{{script_adom}}'
+     register: fmgtask
 
-      register: fmgtask
+   - name: wait for run script on adom task
+     fmgr_fact:
+       facts:
+           selector: 'task_task'
+           params:
+               task: '{{fmgtask.meta.response_data.task}}'
+     register: taskinfo
+     until: taskinfo.meta.response_data.percent == 100
+     retries: 30
+     delay: 5
+     failed_when: taskinfo.meta.response_data.state == 'error'
 
-    - name: wait for run script on adom task
-      fmgr_fact:
-        facts:
-            selector: 'task_task'
-            params:
-                task: '{{fmgtask.meta.response_data.task}}'
-      register: taskinfo
-      until: taskinfo.meta.response_data.percent == 100
-      retries: 30
-      delay: 5
-      failed_when: taskinfo.meta.response_data.state == 'error'
+   - name: make SDWAN template
+     fmgr_generic:
+       method: set
+       params:
+         - url: '/pm/wanprof/adom/{{adom}}'
+           data:
+             - name: '{{sdwan_tpt}}'
+               type: wanprof
 
-    - name: make SDWAN template
-      fmgr_generic:
-        method: set
-        params:
-          - url: '/pm/wanprof/adom/{{adom}}'
-            data:
-              - name: '{{sdwan_tpt}}'
-                type: wanprof
-
-    - name: add WAN1
-      fmgr_generic:
-        method: add
-        params:
-          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
-            data:
-              - name: wan1
-                interface: wan1
-    - name: add WAN2
-      fmgr_generic:
-        method: add
-        params:
-          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
-            data:
-              - name: wan2
-                interface: wan2
+   - name: add WAN1
+     fmgr_generic:
+       method: add
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
+           data:
+             - name: wan1
+               interface: wan1
+   - name: add WAN2
+     fmgr_generic:
+       method: add
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
+           data:
+             - name: wan2
+               interface: wan2
                 
-    - name: set SDWAN template fields
-      fmgr_generic:
-        method: set
-        params:
-          - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
-            data:
-              members:
-                - seq-num: 1
-                  zone: virtual-wan-link
-                  interface: [ wan1 ]
-                  ingress-spillover-threshold: 0
-                  spillover-threshold: 0
-                  weight: 1
-                  volume-ratio: 1
-                  gateway: '0.0.0.0'
-                  cost: 0
-                  status: 1
-                  gateway6: '::'
-                  priority: 0
-                  source: '0.0.0.0'
-                  source6: '::'
-                - seq-num: 2
-                  zone: virtual-wan-link
-                  interface: [ wan2 ]
-                  ingress-spillover-threshold: 0
-                  spillover-threshold: 0
-                  weight: 1
-                  volume-ratio: 1
-                  gateway: '0.0.0.0'
-                  cost: 0
-                  status: 1
-                  gateway6: '::'
-                  priority: 0
-                  source: '0.0.0.0'
-                  source6: '::'
+   - name: set SDWAN template fields
+     fmgr_generic:
+       method: set
+       params:
+         - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
+           data:
+             members:
+               - seq-num: 1
+                 zone: virtual-wan-link
+                 interface: [ wan1 ]
+                 ingress-spillover-threshold: 0
+                 spillover-threshold: 0
+                 weight: 1
+                 volume-ratio: 1
+                 gateway: '0.0.0.0'
+                 cost: 0
+                 status: 1
+                 gateway6: '::'
+                 priority: 0
+                 source: '0.0.0.0'
+                 source6: '::'
+               - seq-num: 2
+                 zone: virtual-wan-link
+                 interface: [ wan2 ]
+                 ingress-spillover-threshold: 0
+                 spillover-threshold: 0
+                 weight: 1
+                 volume-ratio: 1
+                 gateway: '0.0.0.0'
+                 cost: 0
+                 status: 1
+                 gateway6: '::'
+                 priority: 0
+                 source: '0.0.0.0'
+                 source6: '::'
 
-              health-check:
-                - name: 'Default_AWS'
-                  _dynamic-server: 'Default_AWS'
-                - name: 'Default_FortiGuard'
-                  _dynamic-server: 'Default_FortiGuard'
-                - name: 'Default_Gmail'
-                  _dynamic-server: 'Default_Gmail'
-                - name: "Default_Google Search"
-                  _dynamic-server: "Default_Google Search"
-                - name: "Default_Office_365"
-                  _dynamic-server: "Default_Office_365"
+             health-check:
+               - name: 'Default_AWS'
+                 _dynamic-server: 'Default_AWS'
+               - name: 'Default_FortiGuard'
+                 _dynamic-server: 'Default_FortiGuard'
+               - name: 'Default_Gmail'
+                 _dynamic-server: 'Default_Gmail'
+               - name: "Default_Google Search"
+                 _dynamic-server: "Default_Google Search"
+               - name: "Default_Office_365"
+                 _dynamic-server: "Default_Office_365"
 ### IPsec template

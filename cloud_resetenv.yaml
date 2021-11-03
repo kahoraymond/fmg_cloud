@@ -106,15 +106,6 @@
        method: delete
        params:
          - url: '/pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp/{{fap}}'
-           push: 1
-           data:
-             name: '{{fap}}'
-             wtp-id: '{{fap_sn}}'
-             wtp-profile: '{{fap_prof}}' #'FAP24D-default'
-             # bug similar to mantis 0605560 for model dev above:
-             #   can not create with existing {{fap_prof}} profile
-             #   so create with model default and update profile to the one we want in update
-     ignore_errors: yes # 0690745
 
 
                 

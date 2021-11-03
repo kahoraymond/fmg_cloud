@@ -65,13 +65,7 @@
             data:
               - action: 'conf-ipsec-template'
                 model: all
-                # WARNing: do NOT use ansible variables here, fex {{ipsec_tun}}
-                #   created tunnel will be invalid
-                # extra WARNing: 'value:' has to be one json term packed in one string
-                #   do not unfold components in yaml
-                # extra WARNing: this string is verry sensitive and like, ee!moe!shunul!!
-                #   make and log the request in gui, then paste it here literally
-                #   orelse log from the cli: dia deb ena; dia deb service cdb 255;
+
 
                 value: "{\"local-addr-type\":\"metadata\",\"automatic-routing\":\"enable\",\"add-route\":\"enable\",\"assign-ip\":\"enable\",\"authmethod\":\"psk\",\"auto-discovery-forwarder\":\"disable\",\"auto-discovery-receiver\":\"disable\",\"auto-discovery-sender\":\"disable\",\"dpd\":\"on-idle\",\"dpd-retrycount\":3,\"dpd-retryinterval\":\"20\",\"idle-timeout\":\"disable\",\"idle-timeoutinterval\":15,\"ike-version\":\"2\",\"interface\":\"wan1\",\"ipv4-end-ip\":\"0.0.0.0\",\"ipv4-netmask\":\"255.255.255.255\",\"ipv4-start-ip\":\"0.0.0.0\",\"keylife\":86400,\"mode-cfg\":\"disable\",\"name\":\"ipsec_tun\",\"net-device\":\"disable\",\"network-id\":0,\"network-overlay\":\"disable\",\"psksecret\":\"fortinet\",\"remote-gw\":\"192.168.1.11\",\"tunnel-search\":\"selectors\",\"type\":\"static\",\"remote-subnet\":[\"0.0.0.0\",\"255.255.255.255\"],\"local-intf\":\"wan1\",\"local-addr-meta\":\"0.0.0.0\",\"system interface\":{\"remote-ip\":\"\",\"ip\":\"\"}}"
 

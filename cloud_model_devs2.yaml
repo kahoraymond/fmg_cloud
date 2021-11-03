@@ -571,19 +571,19 @@
                   end
 
                   ### FEX 
-                  #1:config extender-controller extender
-                  #1:  edit "{{fex_sn}}"
-                  #1:    #1set authorized enable
-                  #1:    #1config modem1
-                  #1:    #1  set ifname "FortiExtender"
-                  #1:    #1  set sim1-pin enable
-                  #1:    #1  set sim1-pin-code 654321
-                  #1:    #1  config auto-switch
-                  #1:    #1    set switch-back-time "21:1 "
-                  #1:    #1  end
-                  #1:    #1end
-                  #1:  next
-                  #1:end
+                  config extender-controller extender
+                    edit "{{fex_sn}}"
+                      set authorized enable
+                      config modem1
+                        set ifname "FortiExtender"
+                        #1  set sim1-pin enable
+                        #1  set sim1-pin-code 654321
+                        config auto-switch
+                          set switch-back-time "21:1 "
+                      end
+                    end
+                    next
+                  end
                   config system global
                       set fgd-alert-subscription advisory latest-threat
                       set gui-ipv6 enable

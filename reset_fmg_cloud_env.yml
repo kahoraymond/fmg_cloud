@@ -1,0 +1,93 @@
+- hosts: all
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
+     FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
+     FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
+     
+     geo_zone: NA
+     adom: root
+     fsw: FSW108E
+     fsw_nm: FSW108E
+     fsw_tpt: FSW108E
+     fap: FAP24D
+     fap_prof: AP-P
+     sdwan: SDWan
+     sdwan_tpt: SDWAN_template
+     ipsec_tpt: IPsec_template
+     ipsec_tun: ipsec_tun
+     fex: FXT40D
+     pos_subnet: 192.168.100
+     securewlan_subnet: 192.168.110
+     backoffice_subnet: 192.168.120
+     iot_subnet: 192.168.130
+     guestwlan_subnet: 192.168.200
+     address: Sugarloaf
+     script_adom: prep_adom
+     polpkg: PP_NA
+     
+     
+   
+  tasks:
+   - name: Generate Access Token From FortiCloud Auth Server.
+     uri:
+       url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
+       method: POST
+       body_format: json
+       return_content: true
+       headers:
+         Content-Type: application/json
+       body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
+     register: tokeninfo
+     
+   - name: Configure IPv4 addresses.
+     fmgr_firewall_address:
+        adom: root
+        state: present
+        enable_log: true
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        firewall_address:
+          name: Win11c
+          comment: from Ansible
+          organization: Fortinet
+          start-ip: 192.168.1.5
+          end-ip: 192.168.1.11
+          type: iprange
+          associated-interface: any
+
+   - name: delete policy package {{polpkg}}
+     fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: delete
+        params:
+          - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
+
+   - name: delete script {{script_adom}} to configure adom {{adom}}
+     fmgr_generic:
+       method: delete
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script/{{script_adom}}'
+
+   - name: delete SDWAN template
+     fmgr_generic:
+       method: delete
+       params:
+         - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
+
+   - name: delete WAN1
+     fmgr_generic:
+       method: delete
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members/wan1'
+
+   - name: delete wwan
+     fmgr_generic:
+       method: delete
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members/wwan'
+
+                

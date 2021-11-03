@@ -79,6 +79,7 @@
 
    - name: create script {{script_adom}} to configure adom {{adom}}
      fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        method: set
        params:
          - url: '/dvmdb/adom/{{adom}}/script'
@@ -946,6 +947,7 @@
                   end
    - name: run script {{script_adom}} on adom {{adom}}
      fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        method: exec
        params:
          - url: '/dvmdb/adom/{{adom}}/script/execute'
@@ -970,6 +972,7 @@
      
    - name: make SDWAN template
      fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        method: set
        params:
          - url: '/pm/wanprof/adom/{{adom}}'
@@ -987,6 +990,7 @@
    #            interface: wan1
    - name: add wwan
      fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        method: add
        params:
          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
@@ -996,6 +1000,7 @@
                 
    - name: set SDWAN template fields
      fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
        method: set
        params:
          - url: '/pm/config/adom/{{adom}}/wanprof/{{sdwan_tpt}}/system/sdwan'

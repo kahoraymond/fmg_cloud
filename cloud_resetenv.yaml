@@ -44,6 +44,17 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
 
+   - name: delete model device
+     fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/dvm/cmd/delete/device'
+            data:
+              adom: '{{adom}}'
+              device:
+                  name: '{{fgt}}'
+          
    - name: delete policy package {{polpkg}}
      fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'

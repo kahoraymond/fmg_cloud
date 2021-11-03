@@ -973,6 +973,7 @@
            data:
              - name: wan1
                interface: wan1
+     ignore_errors: yes
    - name: add wwan
      fmgr_generic:
        forticloud_access_token: '{{ tokeninfo.json.access_token }}'

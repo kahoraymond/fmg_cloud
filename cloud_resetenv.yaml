@@ -52,8 +52,7 @@
           - url: '/dvm/cmd/del/device'
             data:
               adom: '{{adom}}'
-              device:
-                  name: '{{fgt}}'
+              device: '{{fgt}}'
           
    - name: delete policy package {{polpkg}}
      fmgr_generic:

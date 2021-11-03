@@ -968,80 +968,80 @@
      failed_when: taskinfo.meta.response_data.state == 'error'
      
      
-    - name: make SDWAN template
-      fmgr_generic:
-        method: set
-        params:
-          - url: '/pm/wanprof/adom/{{adom}}'
-            data:
-              - name: '{{sdwan_tpt}}'
-                type: wanprof
+   - name: make SDWAN template
+     fmgr_generic:
+       method: set
+       params:
+         - url: '/pm/wanprof/adom/{{adom}}'
+           data:
+             - name: '{{sdwan_tpt}}'
+               type: wanprof
 
-    - name: add WAN1
-      fmgr_generic:
-        method: add
-        params:
-          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
-            data:
-              - name: wan1
-                interface: wan1
-    - name: add wwan
-      fmgr_generic:
-        method: add
-        params:
-          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
-            data:
-              - name: wwan
-                interface: wwan
+   - name: add WAN1
+     fmgr_generic:
+       method: add
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
+           data:
+             - name: wan1
+               interface: wan1
+   - name: add wwan
+     fmgr_generic:
+       method: add
+       params:
+         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
+           data:
+             - name: wwan
+               interface: wwan
                 
-    - name: set SDWAN template fields
-      fmgr_generic:
-        method: set
-        params:
-          - url: '/pm/config/adom/{{adom}}/wanprof/{{sdwan_tpt}}/system/sdwan'
-            data:
-              members:
-                - seq-num: 1
-                  _dynamic-member: [ wan1 ]
-                  zone: virtual-wan-link
-                  interface: null
-                  ingress-spillover-threshold: 0
-                  spillover-threshold: 0
-                  weight: 1
-                  volume-ratio: 1
-                  gateway: '0.0.0.0'
-                  cost: 0
-                  status: 1
-                  gateway6: '::'
-                  priority: 0
-                  source: '0.0.0.0'
-                  source6: '::'
-                - seq-num: 2
-                  _dynamic-member: [ wwan ] 
-                  zone: virtual-wan-link
-                  interface: null
-                  ingress-spillover-threshold: 0
-                  spillover-threshold: 0
-                  weight: 1
-                  volume-ratio: 1
-                  gateway: '0.0.0.0'
-                  cost: 0
-                  status: 1
-                  gateway6: '::'
-                  priority: 0
-                  source: '0.0.0.0'
-                  source6: '::'
+   - name: set SDWAN template fields
+     fmgr_generic:
+       method: set
+       params:
+         - url: '/pm/config/adom/{{adom}}/wanprof/{{sdwan_tpt}}/system/sdwan'
+           data:
+             members:
+               - seq-num: 1
+                 _dynamic-member: [ wan1 ]
+                 zone: virtual-wan-link
+                 interface: null
+                 ingress-spillover-threshold: 0
+                 spillover-threshold: 0
+                 weight: 1
+                 volume-ratio: 1
+                 gateway: '0.0.0.0'
+                 cost: 0
+                 status: 1
+                 gateway6: '::'
+                 priority: 0
+                 source: '0.0.0.0'
+                 source6: '::'
+               - seq-num: 2
+                 _dynamic-member: [ wwan ] 
+                 zone: virtual-wan-link
+                 interface: null
+                 ingress-spillover-threshold: 0
+                 spillover-threshold: 0
+                 weight: 1
+                 volume-ratio: 1
+                 gateway: '0.0.0.0'
+                 cost: 0
+                 status: 1
+                 gateway6: '::'
+                 priority: 0
+                 source: '0.0.0.0'
+                 source6: '::'
                   
-              health-check:
-                - name: 'Default_AWS'
-                  _dynamic-server: 'Default_AWS'
-                - name: 'Default_FortiGuard'
-                  _dynamic-server: 'Default_FortiGuard'
-                - name: 'Default_Gmail'
-                  _dynamic-server: 'Default_Gmail'
-                - name: "Default_Google Search"
-                  _dynamic-server: "Default_Google Search"
-                - name: "Default_Office_365"
-                  _dynamic-server: "Default_Office_365"
+             health-check:
+               - name: 'Default_AWS'
+                 _dynamic-server: 'Default_AWS'
+               - name: 'Default_FortiGuard'
+                 _dynamic-server: 'Default_FortiGuard'
+               - name: 'Default_Gmail'
+                 _dynamic-server: 'Default_Gmail'
+               - name: "Default_Google Search"
+                 _dynamic-server: "Default_Google Search"
+               - name: "Default_Office_365"
+                 _dynamic-server: "Default_Office_365"
 
 ### IPsec template

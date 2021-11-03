@@ -977,14 +977,14 @@
              - name: '{{sdwan_tpt}}'
                type: wanprof
 
-   - name: add WAN1
-     fmgr_generic:
-       method: add
-       params:
-         - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
-           data:
-             - name: wan1
-               interface: wan1
+   #- name: add WAN1
+   #  fmgr_generic:
+   #    method: add
+   #    params:
+   #      - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members'
+   #        data:
+   #          - name: wan1
+   #            interface: wan1
    - name: add wwan
      fmgr_generic:
        method: add

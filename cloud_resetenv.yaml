@@ -49,7 +49,7 @@
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
         params:
-          - url: '/dvm/cmd/delete/device'
+          - url: '/dvm/cmd/del/device'
             data:
               adom: '{{adom}}'
               device:

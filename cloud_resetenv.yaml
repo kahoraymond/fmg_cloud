@@ -91,45 +91,45 @@
          - url:  '/pm/config/adom/{{adom}}/obj/dynamic/virtual-wan-link/members/wwan'
          
          
-    - name: delete script {{script_dev}} to config model dev {{fgt}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: delete
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script/{{script_dev}}'
+   - name: delete script {{script_dev}} to config model dev {{fgt}}
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: delete
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script/{{script_dev}}'
           
-    - name: Create script {{script_dynmap}} to configure adom {{adom}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: delete
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script/{{script_dynmap}}'
+   - name: Create script {{script_dynmap}} to configure adom {{adom}}
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: delete
+       params:
+         - url: '/dvmdb/adom/{{adom}}/script/{{script_dynmap}}'
             
-    - name: delete model FSW
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: delete
-        params:
-          - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch/{{fsw_nm}}'
+   - name: delete model FSW
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: delete
+       params:
+         - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch/{{fsw_nm}}'
 
 
 
 ### FAP -------------------------------------------------------
-    - name: delete model FAP
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: delete
-        params:
-          - url: '/pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp/{{fap}}'
-            push: 1
-            data:
-              name: '{{fap}}'
-              wtp-id: '{{fap_sn}}'
-              wtp-profile: '{{fap_prof}}' #'FAP24D-default'
-              # bug similar to mantis 0605560 for model dev above:
-              #   can not create with existing {{fap_prof}} profile
-              #   so create with model default and update profile to the one we want in update
-      ignore_errors: yes # 0690745
+   - name: delete model FAP
+     fmgr_generic:
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: delete
+       params:
+         - url: '/pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp/{{fap}}'
+           push: 1
+           data:
+             name: '{{fap}}'
+             wtp-id: '{{fap_sn}}'
+             wtp-profile: '{{fap_prof}}' #'FAP24D-default'
+             # bug similar to mantis 0605560 for model dev above:
+             #   can not create with existing {{fap_prof}} profile
+             #   so create with model default and update profile to the one we want in update
+     ignore_errors: yes # 0690745
 
 
                 

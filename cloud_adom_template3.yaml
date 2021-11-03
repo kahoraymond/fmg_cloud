@@ -71,11 +71,11 @@
                 package_setting:
                   central-nat: disable
    
-   - name: delete polpkg 'default'
-     fmgr_generic:
-       method: delete
-       params:
-         - url: '/pm/pkg/adom/{{adom}}/default'
+   #- name: delete polpkg 'default'
+   #  fmgr_generic:
+   #    method: delete
+   #    params:
+   #      - url: '/pm/pkg/adom/{{adom}}/default'
 
    - name: create script {{script_adom}} to configure adom {{adom}}
      fmgr_generic:

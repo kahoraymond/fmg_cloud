@@ -76,7 +76,7 @@
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
 
-      #work-around mantis 0605560 : set flags.linked_to_model
+     
     - name: Set auto-link mode on model device
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
@@ -1020,14 +1020,10 @@
             data:
               name: '{{fap}}'
               wtp-id: '{{fap_sn}}'
-              wtp-profile: '{{fap_prof}}' #'FAP24D-default'
-              # bug similar to mantis 0605560 for model dev above:
-              #   can not create with existing {{fap_prof}} profile
-              #   so create with model default and update profile to the one we want in update
+              wtp-profile: '{{fap_prof}}'
+
       ignore_errors: yes # 0690745
-# => "response_data": {"wtp-id": "FAP24D3X15004207"}
-#  get /pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp  =>
-#    "response_data": [{ ..."name":"qqq"...}]
+
 
     - name: On model AP, set device mapping to {{fgt}} and template to {{fap_prof}}
       fmgr_generic:
@@ -1041,10 +1037,8 @@
             data:
               name: '{{fap}}'
               wtp-id: '{{fap_sn}}'
-              wtp-profile: '{{fap_prof}}' # 'FAP24D-default'
-              # another bug? : AP-P will cause polpkg copy to model device to fail
-              #  or is it the dynamic_mapping ? but still, no useful error msg
-              #1_prefer-img-ver: "6.0.6-b00044"
+              wtp-profile: '{{fap_prof}}' 
+
       ignore_errors: yes # 0690745
 
 ### SDWAN -------------------------------------------------------

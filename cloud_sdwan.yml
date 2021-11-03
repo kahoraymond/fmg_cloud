@@ -1,0 +1,385 @@
+{
+  "id": "a035f24b-1972-4932-b168-9a2b9231ea72",
+  "method": "replace",
+  "params": [
+    {
+      "url": "pm/config/device/BP_Branch1/vdom/root/system/sdwan",
+      "data": {
+        "status": 1,
+        "load-balance-mode": 1,
+        "load-balance-quality-mode": 0,
+        "fail-alert-interfaces": [],
+        "fail-detect": 0,
+        "neighbor-hold-boot-time": 0,
+        "neighbor-hold-down": 0,
+        "neighbor-hold-down-time": 0,
+        "members": [
+          {
+            "interface": [
+              "wan1"
+            ],
+            "seq-num": 1,
+            "ingress-spillover-threshold": 0,
+            "spillover-threshold": 0,
+            "weight": 1,
+            "volume-ratio": 1,
+            "gateway": "0.0.0.0",
+            "cost": 0,
+            "status": 1,
+            "zone": "virtual-wan-link",
+            "gateway6": "::",
+            "priority": 0,
+            "source": "0.0.0.0",
+            "source6": "::"
+          },
+          {
+            "interface": [
+              "FortiExtender"
+            ],
+            "seq-num": 2,
+            "ingress-spillover-threshold": 0,
+            "spillover-threshold": 0,
+            "weight": 1,
+            "volume-ratio": 1,
+            "gateway": "0.0.0.0",
+            "cost": 0,
+            "status": 1,
+            "zone": "virtual-wan-link",
+            "gateway6": "::",
+            "priority": 0,
+            "source": "0.0.0.0",
+            "source6": "::"
+          }
+        ],
+        "service": [],
+        "health-check": [
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_AWS",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 8,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [
+              "aws.amazon.com"
+            ],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 5
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 0,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          },
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_DNS",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 1,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 5
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 1,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          },
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_FortiGuard",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 8,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [
+              "fortiguard.com"
+            ],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 5
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 0,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          },
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_Gmail",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 1,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [
+              "gmail.com"
+            ],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 2
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 0,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          },
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_Google Search",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 8,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [
+              "www.google.com"
+            ],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 5
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 0,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          },
+          {
+            "addr-mode": 7,
+            "diffservcode": "000000",
+            "dns-match-ip": "0.0.0.0",
+            "dns-request-domain": "www.example.com",
+            "failtime": 5,
+            "ftp-mode": 0,
+            "ha-priority": 1,
+            "http-agent": [
+              "Chrome/",
+              "Safari/"
+            ],
+            "http-get": "/",
+            "interval": 1000,
+            "members": [],
+            "name": "Default_Office_365",
+            "packet-size": 64,
+            "password": [
+              "ENC",
+              "yfDTNbJrXtlv3CmFjmqbtgfxbSAaTwgDcaZpKvXpOqTp3dqHnqBH5Z0OyGpG7x407Yu1K1342vP6WqwH8s14ZMonFL7UYOAwByvm9crv6ScTKVW0Os96sB1snNahNWaFaPUUq4fwV/0XNhkdb+crFimyRzav570z82V5qeU+UT8Q+TC9OM99Yz4Wkh818N9RtG9lQA=="
+            ],
+            "port": 0,
+            "probe-count": 30,
+            "probe-packets": 1,
+            "probe-timeout": 1000,
+            "protocol": 8,
+            "quality-measured-method": 1,
+            "recoverytime": 10,
+            "security-mode": 0,
+            "server": [
+              "www.office.com"
+            ],
+            "sla": [
+              {
+                "id": 1,
+                "jitter-threshold": 50,
+                "latency-threshold": 250,
+                "link-cost-factor": 7,
+                "packetloss-threshold": 5
+              }
+            ],
+            "sla-fail-log-period": 0,
+            "sla-pass-log-period": 0,
+            "system-dns": 0,
+            "threshold-alert-jitter": 0,
+            "threshold-alert-latency": 0,
+            "threshold-alert-packetloss": 0,
+            "threshold-warning-jitter": 0,
+            "threshold-warning-latency": 0,
+            "threshold-warning-packetloss": 0,
+            "update-cascade-interface": 1,
+            "update-static-route": 1
+          }
+        ],
+        "neighbor": [],
+        "zone": [
+          {
+            "name": "virtual-wan-link",
+            "obj seq": 1,
+            "service-sla-tie-break": 1
+          }
+        ],
+        "duplication": []
+      }
+    }
+  ]
+}

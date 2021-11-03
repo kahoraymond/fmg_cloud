@@ -11,7 +11,7 @@
      
      fsw_nm: FSW108E
      fsw_tpt: FSW108E
-     fap_prof: AP-P
+     fap_prof: FAP221E-default
      sdwan: SDWan
      sdwan_tpt: SDWAN_template
      ipsec_tpt: IPsec_template

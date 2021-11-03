@@ -123,7 +123,7 @@
 ### IPsec
     - name: assign IPsec template to device {{fgt}}
       fmgr_generic:
-      forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: set
         params:
           - url: '/pm/template/adom/{{adom}}'

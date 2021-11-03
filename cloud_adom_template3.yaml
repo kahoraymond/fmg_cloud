@@ -997,7 +997,7 @@
            data:
              - name: wwan
                interface: wwan
-     ignore_failure: yes
+     ignore_errors: yes
                 
    - name: set SDWAN template fields
      fmgr_generic:

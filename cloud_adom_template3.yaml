@@ -9,26 +9,14 @@
      FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
      FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
      
-     geo_zone: NA
-     adom: root
-     fsw: FSW108E
-     fsw_nm: FSW108E
      fsw_tpt: FSW108E
-     fap: FAP24D
      fap_prof: AP-P
      sdwan: SDWan
      sdwan_tpt: SDWAN_template
      ipsec_tpt: IPsec_template
      ipsec_tun: ipsec_tun
-     fex: FXT40D
-     pos_subnet: 192.168.100
-     securewlan_subnet: 192.168.110
-     backoffice_subnet: 192.168.120
-     iot_subnet: 192.168.130
-     guestwlan_subnet: 192.168.200
-     address: Sugarloaf
      script_adom: prep_adom
-     polpkg: PP_NA
+     polpkg: BP_PP
      
      
    

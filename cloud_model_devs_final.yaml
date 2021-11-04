@@ -20,6 +20,7 @@
      script_dynmap: config_dynmap
      script_dev: config_modeldevs
      polpkg: BP_PP
+     ipsec_adom_script: ipsec_adom_script
      
    
   tasks:

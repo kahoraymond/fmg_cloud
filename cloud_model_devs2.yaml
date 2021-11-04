@@ -572,7 +572,7 @@
 
                   ### FEX 
                   config extender-controller extender
-                    edit "{{fex_sn}}"
+                    edit FX04DI5919000094
                       set authorized enable
                       config modem1
                         set ifname "FortiExtender"

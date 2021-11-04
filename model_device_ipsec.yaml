@@ -1088,9 +1088,7 @@
       retries: 30
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error'
-	  
-	  
-	  
+
 ##### IPsec configuration
 
 ### IPsec template

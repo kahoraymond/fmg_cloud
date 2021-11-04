@@ -949,7 +949,6 @@
                   #2:    set _scope "FL-KeyWest"-"root"
                   #2:  next
                   #2:end
-                  #2:# config platform mapping # who/when does it?
 
     - name: Run script {{script_dynmap}} on adom {{adom}}
       fmgr_generic:
@@ -1254,7 +1253,6 @@
                           #set defmap-intf "{{ipsec_tun}}"
                       next
                   end
-                  #2:# config platform mapping ? who/when does this
                   config firewall policy
                       edit 0
                           set name "{{ipsec_tun}} out"

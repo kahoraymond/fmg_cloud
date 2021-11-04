@@ -16,6 +16,7 @@
      sdwan_tpt: SDWAN_template
      ipsec_tpt: IPsec_template
      ipsec_tun: ipsec_tun
+     ipsec_adom_script: ipsec_adom_script
      script_adom: prep_adom
      script_dynmap: config_dynmap
      script_dev: config_modeldevs

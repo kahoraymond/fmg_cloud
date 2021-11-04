@@ -215,14 +215,14 @@
                               set vaps "SSID-P_Guest" "SSID-P_Secure"
                               set channel "1" "6" "11"
                           end
-                          #config radio-2
-                          #    set band 802.11ac
-                          #    set channel-bonding 40MHz
-                          #    set wids-profile "default-wids-apscan-enabled"
-                          #    set vap-all disable
-                          #    set vaps "SSID-P_Guest" "SSID-P_Secure"
-                          #    set channel "36" "40" "44" "48" "149" "153" "157" "161"
-                          #end
+                          config radio-2
+                              set band 802.11ac
+                              set channel-bonding 40MHz
+                              set wids-profile "default-wids-apscan-enabled"
+                              set vap-all disable
+                              set vaps "SSID-P_Guest" "SSID-P_Secure"
+                              set channel "36" "40" "44" "48" "149" "153" "157" "161"
+                          end
                       next
                   end
                   # pre-SDWAN

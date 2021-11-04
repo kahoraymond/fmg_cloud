@@ -1088,9 +1088,6 @@
       retries: 30
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error'
-	  
-	  
-
 ### IPsec
     - name: assign IPsec template to device {{fgt}}
       fmgr_generic:

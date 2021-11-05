@@ -523,7 +523,6 @@
                      config neighbor
                      edit "192.168.1.11"
                      set remote-as 65500
-                 next
                  end
                   # sdwan ---------------------------------
                   #do:moved some to adom, patch device dependent parts here

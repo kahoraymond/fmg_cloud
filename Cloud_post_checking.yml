@@ -11,16 +11,8 @@
      debug:
        var: ansible_facts
    - name: Interface configuration.
-     fmgr_system_interface:
+     fmgr_dvmdb_device:
         bypass_validation: False
-        state: present
-        system_interface:
-           allowaccess:
-             - ping
-           ip: '222.222.22.2/24'
-           mtu: 1500
-           name: port3
-           serviceaccess:
-             - fgtupdates
-           speed: auto #<value in [auto, 10full, 10half, ...]>
-           status: up
+        admom: root
+        device: BP_Branch1
+        

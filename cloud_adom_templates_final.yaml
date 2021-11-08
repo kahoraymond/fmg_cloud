@@ -12,6 +12,7 @@
      fsw_nm: FortiSwitch
      fsw_tpt: FSW_template
      fap_prof: AP-P
+     fsw: FSW108E
      sdwan: SDWan
      sdwan_tpt: SDWAN_template
      ipsec_tpt: IPsec_template

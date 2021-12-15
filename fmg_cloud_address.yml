@@ -6,8 +6,6 @@
      ansible_httpapi_use_ssl: True
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
-     FORTICLOUD_APIID: APIID
-     FORTICLOUD_PASSWD: PASSWD
    
   tasks:
    - name: Generate Access Token From FortiCloud Auth Server.

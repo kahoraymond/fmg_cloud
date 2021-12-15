@@ -227,8 +227,7 @@
                       next
                   end
                   # pre-SDWAN
-                  
-				  
+                  		  
                   config dynamic virtual-wan-link server
                   #aka adom for: config health-check
                       edit "Default_Office_365"

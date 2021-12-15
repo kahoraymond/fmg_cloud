@@ -19,6 +19,7 @@
      ipsec_tun: ipsec_tun
      script_adom: prep_adom
      polpkg: BP_PP
+     adom: ztp_demo
      
 
    

@@ -35,14 +35,13 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
    
-   - name: create policy package {{polpkg}}
+   - name: add adom {{adom}}
      fmgr_generic:
-       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-       method: set
+       method: add
        params:
-         - url: '/pm/pkg/adom/{{adom}}'
+         - url: '/dvmdb/adom'
            data:
-             - name: '{{polpkg}}'
-               type: pkg
-               package_setting:
-                 central-nat: disable
+             - name: '{{adom}}'
+               flags: [ central_sdwan, no_vpn_console ] # no_vpn_console, 
+               os_ver: '6.0'
+               mr: 4

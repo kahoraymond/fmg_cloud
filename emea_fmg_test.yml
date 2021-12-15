@@ -18,7 +18,7 @@
      ipsec_tpt: IPsec_template
      ipsec_tun: ipsec_tun
      script_adom: prep_adom
-     polpkg: BP_PP
+     polpkg: ztp_pp
      adom: ztp_demo
      
 
@@ -34,14 +34,15 @@
          Content-Type: application/json
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
-   - name: add adom {{adom}}
+   
+   - name: create policy package {{polpkg}}
      fmgr_generic:
-       method: add
+       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+       method: set
        params:
-         - url: '/dvmdb/adom'
+         - url: '/pm/pkg/adom/{{adom}}'
            data:
-             - name: '{{adom}}'
-               flags: [ central_sdwan, no_vpn_console ] # no_vpn_console, 
-               os_ver: '6.0'
-               mr: 4  
-    
+             - name: '{{polpkg}}'
+               type: pkg
+               package_setting:
+                 central-nat: disable

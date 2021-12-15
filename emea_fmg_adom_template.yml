@@ -18,8 +18,6 @@
      script_adom: prep_adom
      polpkg: ztp_pp
      adom: ztp_demo
-     FORTICLOUD_APIID: 05F5D212-A379-4367-8B71-C7CB0678E457
-     FORTICLOUD_PASSWD: 317c8ddfb10d44406d5e5a08e28831f8!1Aa
      
   tasks:
    - name: Generate Access Token From FortiCloud Auth Server.

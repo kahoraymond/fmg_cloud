@@ -1,5 +1,6 @@
 [fortimanagers]
-fortimanager01 ansible_host=429794.ca-west-1.fortimanager.forticloud.com
+fortimanager01 ansible_host=429794.eu-central-1.fortimanager.forticloud.com
+
 
 [fortimanagers:vars]
 ansible_network_os=fortinet.fortimanager.fortimanager

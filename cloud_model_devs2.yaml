@@ -6,8 +6,8 @@
      ansible_httpapi_use_ssl: True
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
-     FORTICLOUD_APIID: 7F217031-9D17-48DB-9D2F-5B45E4761F01
-     FORTICLOUD_PASSWD: 402bef868a9f3270445974d9c9624c4d!1Aa
+     FORTICLOUD_APIID: APIID
+     FORTICLOUD_PASSWD: PASSWD
      
      fsw_nm: FSW108E
      fsw_tpt: FSW108E

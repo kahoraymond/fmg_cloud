@@ -1,5 +1,5 @@
 [fortimanagers]
-fortimanager01 ansible_host=429794.eu-central-1.fortimanager.forticloud.com
+emea_fmg_cloud ansible_host=429794.eu-central-1.fortimanager.forticloud.com
 
 
 [fortimanagers:vars]

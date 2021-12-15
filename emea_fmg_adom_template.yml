@@ -31,3 +31,13 @@
        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
      register: tokeninfo
    
+   - name: add adom {{adom}}
+     fmgr_generic:
+       method: add
+       params:
+         - url: '/dvmdb/adom'
+           data:
+             - name: '{{adom}}'
+               flags: [ central_sdwan, no_vpn_console ] # no_vpn_console, 
+               os_ver: '6.0'
+               mr: 4

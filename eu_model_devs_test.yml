@@ -97,3 +97,14 @@
                 - name: '{{fgt}}'
                   vdom: root
 #------------------------------------------------------------------
+    - name: Set system teplate
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/pm/devprof/adom/{{adom}}/{{sys_tpt}}'
+            data:
+              'scope member':
+                - name: '{{fgt}}'
+                  vdom: root
+#------------------------------------------------------------------

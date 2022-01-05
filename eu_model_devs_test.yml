@@ -108,3 +108,18 @@
                 - name: '{{fgt}}'
                   vdom: root
 #------------------------------------------------------------------
+    - name: Run script {{script_dev}} on model dev {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/dvmdb/adom/{{adom}}/script/execute'
+            data:
+              adom: '{{adom}}'
+              scope:
+                - name: '{{fgt}}'
+                  vdom: global
+              script: '{{script_dev}}'
+
+      register: fmgtask
+

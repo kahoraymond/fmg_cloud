@@ -57,13 +57,14 @@
                     POC_GUEST: '{{guest_subnet}}'
                     POC_IOT: '{{iot_subnet}}'
                     POC_STAFF: '{{staff_subnet}}'
+                    Company/Organization: '{{company}}'
                   flags: [ is_model, linked_to_model ]
                   add_model: 1
                   name: '{{fgt}}'
                   sn: "{{fgt_sn}}"
                   os_type: 'fos'
-                  os_ver: '6.0'
-                  mr: 4
-                  patch: 6
-                  # prefer_img_ver: "6.4.6-b1879"
+                  os_ver: '7.0'
+                  mr: 0
+                  patch: 1
+                  
       register: fmgtask

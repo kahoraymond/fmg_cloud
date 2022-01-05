@@ -61,20 +61,21 @@
                   patch: 1
                   
       register: fmgtask
-      
+#------------------------------------------------------------------      
       - name: Wait for add device task
-      fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        facts:
-            selector: 'task_task'
-            params:
-                task: '{{fmgtask.meta.response_data.taskid}}'
-      register: taskinfo
-      until: taskinfo.meta.response_data.percent == 100
-      retries: 30
-      delay: 5
-      failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
-
+        fmgr_fact:
+          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+          facts:
+              selector: 'task_task'
+              params:
+                  task: '{{fmgtask.meta.response_data.taskid}}'
+        register: taskinfo
+        until: taskinfo.meta.response_data.percent == 100
+        retries: 30
+        delay: 5
+        failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
+        
+#------------------------------------------------------------------   
       - name: Set auto-link mode on model device
         fmgr_generic:
           forticloud_access_token: '{{ tokeninfo.json.access_token }}'

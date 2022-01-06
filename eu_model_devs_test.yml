@@ -45,6 +45,7 @@
                   mgmt_mode: 'fmg'
                   model_device: 1
                   meta fields:
+                    HOSTNAME: '{{hostname}}'
                     MGT_IP: '{{mgt_ip}}'
                     Company/Organization: '{{company}}'
                   flags: [ is_model, linked_to_model ]

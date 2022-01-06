@@ -45,11 +45,7 @@
                   mgmt_mode: 'fmg'
                   model_device: 1
                   meta fields:
-                    POC_POS: '{{pos_subnet}}'
-                    POC_USER: '{{user_subnet}}'
-                    POC_GUEST: '{{guest_subnet}}'
-                    POC_IOT: '{{iot_subnet}}'
-                    POC_STAFF: '{{staff_subnet}}'
+                    MGT_IP: '{{mgt_ip}}'
                     Company/Organization: '{{company}}'
                   flags: [ is_model, linked_to_model ]
                   add_model: 1

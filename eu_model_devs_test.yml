@@ -7,10 +7,17 @@
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
      
-
+     fsw_nm: FSW108E
+     fsw_tpt: FSW108E
+     fap_prof: AP-P
+     sdwan: SDWan
+     sdwan_tpt: SDWAN_template
+     ipsec_tpt: IPsec_template
+     ipsec_tun: ipsec_tun
      script_adom: prep_adom
      script_dynmap: config_dynmap
      script_dev: config_modeldevs
+     polpkg: BP_PP
      ipsec_adom_script: ipsec_adom_script
      
    
@@ -25,10 +32,10 @@
           Content-Type: application/json
         body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
       register: tokeninfo
-
+#
 ## add model device
-    
-    - name: Add model device
+#
+    - name: Add model device {{adom}}/{{fgt}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
@@ -44,25 +51,17 @@
                   desc:
                   mgmt_mode: 'fmg'
                   model_device: 1
-                  meta fields:
-                    BRANCH_ID: '{{branch_id}}'
-                    STAFF_SUBNET: '{{staff_subnet}}'
-                    IOT_SUBNET: '{{iot_subnet}}'
-                    GUEST_SUBNET: '{{guest_subnet}}'
-                    USER_SUBNET: '{{user_subnet}}'
-                    POS_SUBNET: '{{pos_subnet}}'
-                    Company/Organization: '{{company}}'
                   flags: [ is_model, linked_to_model ]
                   add_model: 1
                   name: '{{fgt}}'
                   sn: "{{fgt_sn}}"
                   os_type: 'fos'
-                  os_ver: '7.0'
-                  mr: 0
-                  patch: 1
-                  
+                  os_ver: '6.0'
+                  mr: 4
+                  patch: 6
+                  # prefer_img_ver: "6.4.6-b1879"
       register: fmgtask
-#------------------------------------------------------------------      
+
     - name: Wait for add device task
       fmgr_fact:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
@@ -75,8 +74,8 @@
       retries: 30
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
-        
-#------------------------------------------------------------------   
+
+     
     - name: Set auto-link mode on model device
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
@@ -85,72 +84,3 @@
           - url: '/dvmdb/adom/{{adom}}/device/{{fgt}}'
             data:
               flags: [ is_model, linked_to_model ]
-    
-    - name: Create model FSW
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set # update add
-        params:
-          - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch'
-            push: 1             # auto-copy to (model) fgt
-            data:
-              name: '{{fsw_nm}}'
-              switch-id: '{{fsw_sn}}'
-              fsw-wan1-peer: fortilink
-
-          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
-            data:
-              name: '{{fsw_nm}}'
-              template: '{{fsw_tpt}}'
-              
-    - name: Assign device and template to model FSW
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: update
-        params:
-          - url: "/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}"
-            'scope member':
-              - name: '{{fgt}}'
-                vdom: root
-            data:
-              name: '{{fsw_nm}}'
-              template: '{{fsw_tpt}}'              
-
-#------------------------------------------------------------------
-#    - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: set
-#        params:
-#          - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
-#            data:
-#              'scope member':
-#                - name: '{{fgt}}'
-#                  vdom: root
-#------------------------------------------------------------------
-#    - name: Set system template
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: set
-#        params:
-#          - url: '/pm/devprof/adom/{{adom}}/{{sys_tpt}}'
-#            data:
-#              'scope member':
-#                - name: '{{fgt}}'
-#                  vdom: root
-#------------------------------------------------------------------
-#    - name: Run script {{script_dev}} on model dev {{fgt}}
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: exec
-#        params:
-#          - url: '/dvmdb/adom/{{adom}}/script/execute'
-#            data:
-#              adom: '{{adom}}'
-#              scope:
-#                - name: '{{fgt}}'
-#                  vdom: global
-#              script: '{{script_dev}}'
-#
-#      register: fmgtask
-

@@ -46,7 +46,6 @@
                   model_device: 1
                   meta fields:
                     BRANCH_ID: '{{branch_id}}'
-                    MGT_IP: '{{mgt_ip}}'
                     STAFF_SUBNET: '{{staff_subnet}}'
                     IOT_SUBNET: '{{iot_subnet}}'
                     GUEST_SUBNET: '{{guest_subnet}}'

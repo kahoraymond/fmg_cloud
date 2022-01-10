@@ -45,13 +45,14 @@
                   mgmt_mode: 'fmg'
                   model_device: 1
                   meta fields:
-                    HOSTNAME: '{{hostname}}'
+                    BRANCH_ID: '{{brnach_id}}'
                     MGT_IP: '{{mgt_ip}}'
-                    POC_STAFF: '{{staff_subnet}}'
-                    POC_IOT: '{{iot_subnet}}'
-                    POC_GUEST: '{{guest_subnet}}'
-                    POC_USER: '{{user_subnet}}'
-                    POC_POS: '{{pos_subnet}}'
+                    STAFF_SUBNET: '{{staff_subnet}}'
+                    IOT_SUBNET: '{{iot_subnet}}'
+                    GUEST_SUBNET: '{{guest_subnet}}'
+                    USER_SUBNET: '{{user_subnet}}'
+                    POS_SUBNET: '{{pos_subnet}}'
+                    
                     Company/Organization: '{{company}}'
                   flags: [ is_model, linked_to_model ]
                   add_model: 1

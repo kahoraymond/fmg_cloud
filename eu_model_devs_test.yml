@@ -25,10 +25,10 @@
           Content-Type: application/json
         body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
       register: tokeninfo
-#
+
 ## add model device
-#
-    - name: Add model device {{adom}}/{{fgt}}
+    
+    - name: Add model device
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec

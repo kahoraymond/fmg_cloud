@@ -45,7 +45,6 @@
                   mgmt_mode: 'fmg'
                   model_device: 1
                   meta fields:
-                    HOSTNAME: '{{hostname}}'
                     BRANCH_ID: '{{brnach_id}}'
                     MGT_IP: '{{mgt_ip}}'
                     STAFF_SUBNET: '{{staff_subnet}}'

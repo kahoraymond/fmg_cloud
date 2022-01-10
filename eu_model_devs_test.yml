@@ -6,20 +6,7 @@
      ansible_httpapi_use_ssl: True
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
-     
-     fsw_nm: FSW108E
-     fsw_tpt: FSW108E
-     fap_prof: AP-P
-     sdwan: SDWan
-     sdwan_tpt: SDWAN_template
-     ipsec_tpt: IPsec_template
-     ipsec_tun: ipsec_tun
-     script_adom: prep_adom
-     script_dynmap: config_dynmap
-     script_dev: config_modeldevs
-     polpkg: BP_PP
-     ipsec_adom_script: ipsec_adom_script
-     
+  
    
   tasks:
     - name: Generate Access Token From FortiCloud Auth Server.
@@ -51,6 +38,15 @@
                   desc:
                   mgmt_mode: 'fmg'
                   model_device: 1
+                  meta fields:
+                    BRANCH_ID: '{{branch_id}}'
+                    STAFF_SUBNET: '{{staff_subnet}}'
+                    IOT_SUBNET: '{{iot_subnet}}'
+                    GUEST_SUBNET: '{{guest_subnet}}'
+                    USER_SUBNET: '{{user_subnet}}'
+                    POS_SUBNET: '{{pos_subnet}}'
+                    Company/Organization: '{{company}}'
+                  flags: [ is_model, linked_to_model ]
                   flags: [ is_model, linked_to_model ]
                   add_model: 1
                   name: '{{fgt}}'

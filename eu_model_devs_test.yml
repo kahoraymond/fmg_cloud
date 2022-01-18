@@ -122,16 +122,16 @@
               template: '{{fsw_tpt}}'              
 
 #------------------------------------------------------------------
-#    - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: set
-#        params:
-#          - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
-#            data:
-#              'scope member':
-#                - name: '{{fgt}}'
-#                  vdom: root
+    - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
+            data:
+              'scope member':
+                - name: '{{fgt}}'
+                  vdom: root
 #------------------------------------------------------------------
 #    - name: Set system template
 #      fmgr_generic:

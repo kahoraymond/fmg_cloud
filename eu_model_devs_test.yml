@@ -62,8 +62,8 @@
                   name: '{{fgt}}'
                   sn: "{{fgt_sn}}"
                   os_type: 'fos'
-                  os_ver: '6.4'
-                  mr: 0
+                  os_ver: '6.0'
+                  mr: 4
                   patch: 7
                   
       register: fmgtask

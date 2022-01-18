@@ -45,13 +45,18 @@
                   mgmt_mode: 'fmg'
                   model_device: 1
                   meta fields:
-                    BRANCH_ID: '{{branch_id}}'
-                    STAFF_SUBNET: '{{staff_subnet}}'
-                    IOT_SUBNET: '{{iot_subnet}}'
-                    GUEST_SUBNET: '{{guest_subnet}}'
-                    USER_SUBNET: '{{user_subnet}}'
-                    POS_SUBNET: '{{pos_subnet}}'
-                    Company/Organization: '{{company}}'
+                    LOOPBACK0: '{{loopback0}}'
+                    NET_A: '{{net_a}}'
+                    NET_B: '{{net_b}}'
+                    VPN_LTE_GH_IP: '{{vpn_lte_gh_ip}}'
+                    VPN_LTE_FRA_IP: '{{vpn_lte_fra_ip}}'
+                    VPN_DSL_GH_IP: '{{vpn_dsl_gh_ip}}'
+                    VPN_DSL_FRA_IP: '{{vpn_dsl_fra_ip}}'
+                    VPN_PSK: '{{vpn_psk}}'
+                    VPN_LTE_USER: '{{vpn_lte_user}}'
+                    VPN_LTE_PASSWORD: '{{vpn_lte_password}}'
+                    VPN_DSL_USER: '{{vpn_dsl_user}}'
+                    VPN_DSL_PASSWORD: '{{vpn_dsl_password}}'
                   flags: [ is_model, linked_to_model ]
                   add_model: 1
                   name: '{{fgt}}'

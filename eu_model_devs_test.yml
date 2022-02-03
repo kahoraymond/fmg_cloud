@@ -90,37 +90,7 @@
           - url: '/dvmdb/adom/{{adom}}/device/{{fgt}}'
             data:
               flags: [ is_model, linked_to_model ]
-    
-    - name: Create model FSW
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set # update add
-        params:
-          - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch'
-            push: 1             # auto-copy to (model) fgt
-            data:
-              name: '{{fsw_nm}}'
-              switch-id: '{{fsw_sn}}'
-              fsw-wan1-peer: fortilink
-
-#          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
-#            data:
-#              name: '{{fsw_nm}}'
-#              template: '{{fsw_tpt}}'
               
-#    - name: Assign device and template to model FSW
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: update
-#        params:
-#          - url: "/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}"
-#            'scope member':
-#              - name: '{{fgt}}'
-#                vdom: root
-#            data:
-#              name: '{{fsw_nm}}'
-#              template: '{{fsw_tpt}}'              
-
 #------------------------------------------------------------------
     - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
       fmgr_generic:
@@ -132,29 +102,4 @@
               'scope member':
                 - name: '{{fgt}}'
                   vdom: root
-#------------------------------------------------------------------
-#    - name: Set system template
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: set
-#        params:
-#          - url: '/pm/devprof/adom/{{adom}}/{{sys_tpt}}'
-#            data:
-#              'scope member':
-#                - name: '{{fgt}}'
-#                  vdom: root
-#------------------------------------------------------------------
-#    - name: Run script {{script_dev}} on model dev {{fgt}}
-#      fmgr_generic:
-#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-#        method: exec
-#        params:
-#          - url: '/dvmdb/adom/{{adom}}/script/execute'
-#            data:
-#              adom: '{{adom}}'
-#              scope:
-#                - name: '{{fgt}}'
-#                  vdom: global
-#              script: '{{script_dev}}'
-#
-#      register: fmgtask
+ 

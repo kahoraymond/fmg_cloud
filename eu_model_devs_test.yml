@@ -131,3 +131,39 @@
       retries: 30
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error'
+      
+      #------------------------------------------------------------------
+      
+      ### FSW -------------------------------------------------------
+
+    - name: Create model FSW
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set # update add
+        params:
+          - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch'
+            push: 1             # auto-copy to (model) fgt
+            data:
+              name: '{{fsw_nm}}'
+              switch-id: '{{fsw_sn}}'
+              fsw-wan1-peer: fortilink
+
+          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
+            data:
+              name: '{{fsw_nm}}'
+              template: '{{fsw_tpt}}'
+
+    - name: Assign device and template to model FSW
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: update
+        params:
+          - url: "/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}"
+            'scope member':
+              - name: '{{fgt}}'
+                vdom: root
+            data: # 
+              name: '{{fsw_nm}}'
+              template: '{{fsw_tpt}}'
+              #1prefer-img-ver: "6.4.5-b00461"
+

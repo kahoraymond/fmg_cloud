@@ -103,10 +103,10 @@
               switch-id: '{{fsw_sn}}'
               fsw-wan1-peer: fortilink
 
-          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
-            data:
-              name: '{{fsw_nm}}'
-              template: '{{fsw_tpt}}'
+#          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
+#            data:
+#              name: '{{fsw_nm}}'
+#              template: '{{fsw_tpt}}'
               
 #    - name: Assign device and template to model FSW
 #      fmgr_generic:

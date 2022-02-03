@@ -46,6 +46,7 @@
                   model_device: 1
                   meta fields:
                     LOOPBACK0: '{{loopback0}}'
+                    HOSTNAME: '{{fgt}}'
                     NET_A: '{{net_a}}'
                     NET_B: '{{net_b}}'
                     VPN_LTE_GH_IP: '{{vpn_lte_gh_ip}}'

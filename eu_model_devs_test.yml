@@ -148,7 +148,8 @@
          switchcontroller_managedswitch:
             _platform: '{{fsw_ml}}'
             description: '{{fsw_nm}}'
-            name: '{{fsw_sn}}'
+            name: '{{fsw_nm}}'
+            switch-id: '{{fsw_sn}}'
             
 #    - name: Create model FSW
 #      fmgr_generic:

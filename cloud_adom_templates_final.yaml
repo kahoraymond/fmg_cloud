@@ -957,76 +957,76 @@
                  stype: ipsec
                  widgets: [ ipsec ]
 
-   - name: configure IPsec template tunnel
-     fmgr_generic:
-       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-       method: set
-       params:
-         - url: '/pm/config/adom/{{adom}}/template/{{ipsec_tpt}}/device/template/widget/ipsec/action-list'
-           data:
-             - action: 'conf-ipsec-template'
-               model: all
-
-
-               value: "{\"local-addr-type\":\"metadata\",\"automatic-routing\":\"enable\",\"add-route\":\"enable\",\"assign-ip\":\"enable\",\"authmethod\":\"psk\",\"auto-discovery-forwarder\":\"disable\",\"auto-discovery-receiver\":\"disable\",\"auto-discovery-sender\":\"disable\",\"dpd\":\"on-idle\",\"dpd-retrycount\":3,\"dpd-retryinterval\":\"20\",\"idle-timeout\":\"disable\",\"idle-timeoutinterval\":15,\"ike-version\":\"2\",\"interface\":\"wan1\",\"ipv4-end-ip\":\"0.0.0.0\",\"ipv4-netmask\":\"255.255.255.255\",\"ipv4-start-ip\":\"0.0.0.0\",\"keylife\":86400,\"mode-cfg\":\"disable\",\"name\":\"ipsec_tun\",\"net-device\":\"disable\",\"network-id\":0,\"network-overlay\":\"disable\",\"psksecret\":\"fortinet\",\"remote-gw\":\"192.168.1.11\",\"tunnel-search\":\"selectors\",\"type\":\"static\",\"remote-subnet\":[\"0.0.0.0\",\"255.255.255.255\"],\"local-intf\":\"wan1\",\"local-addr-meta\":\"0.0.0.0\",\"system interface\":{\"remote-ip\":\"\",\"ip\":\"\"}}"
-
-               'var-list':
-                 - name: "vpn ipsec phase1-interface/tunnel-search"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/ipv4-netmask"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/ipv4-end-ip"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/ipv4-start-ip"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/ike-version"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/assign-ip"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/network-overlay"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/network-id"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/mode-cfg"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/dpd"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/keylife"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/dpd-retryinterval"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/dpd-retrycount"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/idle-timeoutinterval"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/idle-timeout"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/auto-discovery-forwarder"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/auto-discovery-receiver"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/auto-discovery-sender"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/add-route"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/net-device"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/certificate"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/authmethod"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/psksecret"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/remotegw-ddns"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/remote-gw"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/type"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/interface"
-                   override: 0
-                 - name: "vpn ipsec phase1-interface/name"
-                   override: 0
+#   - name: configure IPsec template tunnel
+#     fmgr_generic:
+#       forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#       method: set
+#       params:
+#         - url: '/pm/config/adom/{{adom}}/template/{{ipsec_tpt}}/device/template/widget/ipsec/action-list'
+#           data:
+#             - action: 'conf-ipsec-template'
+#               model: all
+#
+#
+#               value: "{\"local-addr-type\":\"metadata\",\"automatic-routing\":\"enable\",\"add-route\":\"enable\",\"assign-ip\":\"enable\",\"authmethod\":\"psk\",\"auto-discovery-forwarder\":\"disable\",\"auto-discovery-receiver\":\"disable\",\"auto-discovery-sender\":\"disable\",\"dpd\":\"on-idle\",\"dpd-retrycount\":3,\"dpd-retryinterval\":\"20\",\"idle-timeout\":\"disable\",\"idle-timeoutinterval\":15,\"ike-version\":\"2\",\"interface\":\"wan1\",\"ipv4-end-ip\":\"0.0.0.0\",\"ipv4-netmask\":\"255.255.255.255\",\"ipv4-start-ip\":\"0.0.0.0\",\"keylife\":86400,\"mode-cfg\":\"disable\",\"name\":\"ipsec_tun\",\"net-device\":\"disable\",\"network-id\":0,\"network-overlay\":\"disable\",\"psksecret\":\"fortinet\",\"remote-gw\":\"192.168.1.11\",\"tunnel-search\":\"selectors\",\"type\":\"static\",\"remote-subnet\":[\"0.0.0.0\",\"255.255.255.255\"],\"local-intf\":\"wan1\",\"local-addr-meta\":\"0.0.0.0\",\"system interface\":{\"remote-ip\":\"\",\"ip\":\"\"}}"
+#
+#               'var-list':
+#                 - name: "vpn ipsec phase1-interface/tunnel-search"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/ipv4-netmask"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/ipv4-end-ip"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/ipv4-start-ip"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/ike-version"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/assign-ip"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/network-overlay"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/network-id"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/mode-cfg"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/dpd"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/keylife"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/dpd-retryinterval"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/dpd-retrycount"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/idle-timeoutinterval"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/idle-timeout"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/auto-discovery-forwarder"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/auto-discovery-receiver"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/auto-discovery-sender"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/add-route"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/net-device"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/certificate"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/authmethod"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/psksecret"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/remotegw-ddns"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/remote-gw"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/type"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/interface"
+#                   override: 0
+#                 - name: "vpn ipsec phase1-interface/name"
+#                   override: 0
 
    - name: make SDWAN template
      fmgr_generic:

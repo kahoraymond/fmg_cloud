@@ -135,22 +135,40 @@
       #------------------------------------------------------------------
       
       ### FSW -------------------------------------------------------
-    - name: Configure FortiSwitch devices that are managed by this FortiGate.
-      fmgr_switchcontroller_managedswitch:
-         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-         state: present
+    - name: Add a FSW to the Device Manager database.
+      fmgr_dvm_cmd_add_device:
          bypass_validation: False
          #workspace_locking_adom: <value in [global, custom adom including root]>
          #workspace_locking_timeout: 300
          #rc_succeeded: [0, -2, -3, ...]
          #rc_failed: [-2, -3, ...]
-         adom: '{{adom}}'
-         #state: <value in [present, absent]>
-         switchcontroller_managedswitch:
-            _platform: '{{fsw_ml}}'
-            description: '{{fsw_nm}}'
-            name: '{{fsw_nm}}'
-            switch-id: '{{fsw_ml}}'
+         dvm_cmd_add_device:
+            adom: '{{adom}}'
+            device:
+               #adm_pass: <value of string>
+               #adm_usr: <value of string>
+               desc: '{{fsw_nm}}'
+               device action:
+               #faz.quota: <value of integer>
+               #ip: <value of string>
+               #meta fields: <value of dict>
+               mgmt_mode: 'fmg'
+               mr: 1
+               name: '{{fsw_nm}}'
+               os_type: 'fsw'
+               os_ver: '6.0'
+               patch: '4'
+               platform_str: '{{fsw_ml}}'
+               sn: '{{fsw_sn}}'
+            #flags:
+            # - none
+            # - create_task
+            # - nonblocking
+            # - log_dev
+            groups:
+              -
+                  name: '{{fsw_nm}}'
+                  vdom: 'root'
             
 #    - name: Create model FSW
 #      fmgr_generic:

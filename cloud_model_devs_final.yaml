@@ -1098,50 +1098,50 @@
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error'
 ### IPsec
-    - name: assign IPsec template to device {{fgt}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set
-        params:
-          - url: '/pm/template/adom/{{adom}}'
-            data:
-              name: '{{ipsec_tpt}}'
-              type: pkg
-              'scope member':
-                - name: '{{fgt}}'
-                  vdom: root
-              'template setting':
-                stype: ipsec
-                widgets: [ ipsec ]
+#    - name: assign IPsec template to device {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: set
+#        params:
+#          - url: '/pm/template/adom/{{adom}}'
+#            data:
+#              name: '{{ipsec_tpt}}'
+#              type: pkg
+#              'scope member':
+#                - name: '{{fgt}}'
+#                  vdom: root
+#              'template setting':
+#                stype: ipsec
+#                widgets: [ ipsec ]
 
 ### Install template to model device 1st, then configure adom dyn intf and policies, then install PP
 
-    - name: Install template to model dev {{fgt}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: exec
-        params:
-          - url: '/securityconsole/install/device'
-            data:
-              adom: '{{adom}}'
-              dev_rev_comments:  'v1: {{ipsec_tpt}} to {{fgt}}'
-              #flags: [ none ]
-              scope:
-                - name: '{{fgt}}'
-                  vdom: root
-      register: fmgtask
-
-    - name: Wait for device install to task
-      fmgr_fact:
-        facts:
-            selector: 'task_task'
-            params:
-                task: '{{fmgtask.meta.response_data.task}}'
-      register: taskinfo
-      until: taskinfo.meta.response_data.percent == 100
-      retries: 30
-      delay: 5
-      failed_when: taskinfo.meta.response_data.state == 'error'
+#    - name: Install template to model dev {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/securityconsole/install/device'
+#            data:
+#              adom: '{{adom}}'
+#              dev_rev_comments:  'v1: {{ipsec_tpt}} to {{fgt}}'
+#              #flags: [ none ]
+#              scope:
+#                - name: '{{fgt}}'
+#                 vdom: root
+#      register: fmgtask
+#
+#    - name: Wait for device install to task
+#      fmgr_fact:
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'
 
 ### do adom now, dyn_intf, policies -----------------------------------------------
 #    - name: Create script {{ipsec_adom_script}} to configure adom {{adom}}

@@ -143,12 +143,12 @@
          #workspace_locking_timeout: 300
          #rc_succeeded: [0, -2, -3, ...]
          #rc_failed: [-2, -3, ...]
-         adom: {{adom}}
+         adom: '{{adom}}'
          #state: <value in [present, absent]>
          switchcontroller_managedswitch:
-            _platform: {{fsw_ml}}
-            description: {{fsw_nm}}
-            name: {{fsw_sn}}
+            _platform: '{{fsw_ml}}'
+            description: '{{fsw_nm}}'
+            name: '{{fsw_sn}}'
             
 #    - name: Create model FSW
 #      fmgr_generic:

@@ -146,7 +146,7 @@
             data:
               name: '{{fsw_nm}}'
               switch-id: '{{fsw_sn}}'
-              fsw-wan1-peer: 'port8'
+              fsw-wan1-peer: 'internal'
 
           - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
             data:

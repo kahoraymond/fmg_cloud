@@ -164,6 +164,6 @@
                 vdom: root
             data: # 
               name: '{{fsw_nm}}'
-              template: '{{fsw_tpt}}'
+              #template: '{{fsw_tpt}}'
               #1prefer-img-ver: "6.4.5-b00461"
 

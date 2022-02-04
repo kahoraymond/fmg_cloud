@@ -138,17 +138,17 @@
     - name: Configure FortiSwitch devices that are managed by this FortiGate.
       fmgr_switchcontroller_managedswitch:
          forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-         #bypass_validation: False
+         bypass_validation: False
          #workspace_locking_adom: <value in [global, custom adom including root]>
          #workspace_locking_timeout: 300
          #rc_succeeded: [0, -2, -3, ...]
          #rc_failed: [-2, -3, ...]
-           adom: {{adom}}
+         adom: {{adom}}
          #state: <value in [present, absent]>
-           switchcontroller_managedswitch:
-              _platform: {{fsw_ml}}
-              description: {{fsw_nm}}
-              name: {{fsw_sn}}
+         switchcontroller_managedswitch:
+            _platform: {{fsw_ml}}
+            description: {{fsw_nm}}
+            name: {{fsw_sn}}
             
 #    - name: Create model FSW
 #      fmgr_generic:

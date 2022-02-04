@@ -1144,107 +1144,107 @@
       failed_when: taskinfo.meta.response_data.state == 'error'
 
 ### do adom now, dyn_intf, policies -----------------------------------------------
-    - name: Create script {{ipsec_adom_script}} to configure adom {{adom}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: set
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script'
-            data:
-              - name: '{{ipsec_adom_script}}'
-                target: adom_database
-                type: cli
-                content: |
-                  config dynamic interface
-                      edit "{{ipsec_tun}}"
-                          config dynamic_mapping
-                              edit "{{fgt}}"-"root"
-                                  set local-intf {{ipsec_tun}}
-                              next
-                          end
-                          #set default-mapping enable
-                          #set defmap-intf "{{ipsec_tun}}"
-                      next
-                  end
-                  #2:# config platform mapping ? who/when does this
-                  config firewall policy
-                      edit 0
-                          set name "{{ipsec_tun}} out"
-                          set srcintf "{{ipsec_tun}}"
-                          set dstintf "any"
-                          set srcaddr "all"
-                          set dstaddr "all"
-                          set action accept
-                          set schedule "always"
-                          set service "ALL"
-                          set nat enable
-                      next
-                      edit 0
-                          set name "{{ipsec_tun}} in"
-                          set srcintf "any"
-                          set dstintf "{{ipsec_tun}}"
-                          set srcaddr "all"
-                          set dstaddr "all"
-                          set action accept
-                          set schedule "always"
-                          set service "ALL"
-                          set nat enable
-                      next
-                  end
+#    - name: Create script {{ipsec_adom_script}} to configure adom {{adom}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: set
+#        params:
+#          - url: '/dvmdb/adom/{{adom}}/script'
+#            data:
+#              - name: '{{ipsec_adom_script}}'
+#                target: adom_database
+#                type: cli
+#                content: |
+#                  config dynamic interface
+#                      edit "{{ipsec_tun}}"
+#                          config dynamic_mapping
+#                              edit "{{fgt}}"-"root"
+#                                  set local-intf {{ipsec_tun}}
+#                              next
+#                          end
+#                          #set default-mapping enable
+#                          #set defmap-intf "{{ipsec_tun}}"
+#                      next
+#                  end
+#                  #2:# config platform mapping ? who/when does this
+#                  config firewall policy
+#                      edit 0
+#                          set name "{{ipsec_tun}} out"
+#                          set srcintf "{{ipsec_tun}}"
+#                          set dstintf "any"
+#                          set srcaddr "all"
+#                          set dstaddr "all"
+#                          set action accept
+#                          set schedule "always"
+#                          set service "ALL"
+#                          set nat enable
+#                      next
+#                      edit 0
+#                          set name "{{ipsec_tun}} in"
+#                          set srcintf "any"
+#                          set dstintf "{{ipsec_tun}}"
+#                          set srcaddr "all"
+#                          set dstaddr "all"
+#                          set action accept
+#                          set schedule "always"
+#                          set service "ALL"
+#                          set nat enable
+#                      next
+#                  end
 
-    - name: run script {{ipsec_adom_script}} on adom {{adom}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: exec
-        params:
-          - url: '/dvmdb/adom/{{adom}}/script/execute'
-            data:
-              adom: '{{adom}}'
-              package: '{{polpkg}}'
-              script: '{{ipsec_adom_script}}'
+#    - name: run script {{ipsec_adom_script}} on adom {{adom}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/dvmdb/adom/{{adom}}/script/execute'
+#            data:
+#              adom: '{{adom}}'
+#              package: '{{polpkg}}'
+#              script: '{{ipsec_adom_script}}'
 
-      register: fmgtask
+#      register: fmgtask
 
-    - name: wait for run script on adom task
-      fmgr_fact:
-        facts:
-            selector: 'task_task'
-            params:
-                task: '{{fmgtask.meta.response_data.task}}'
-      register: taskinfo
-      until: taskinfo.meta.response_data.percent == 100
-      retries: 30
-      delay: 5
-      failed_when: taskinfo.meta.response_data.state == 'error'
+#    - name: wait for run script on adom task
+#      fmgr_fact:
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'
 
 #### re-install polpkg to model dev with the new ipsec policies
 
-    - name: Install polpkg {{polpkg}} to model dev {{fgt}}
-      fmgr_generic:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        method: exec
-        params:
-          - url: '/securityconsole/install/package'
-            data:
-              adom: '{{adom}}'
-              adom_rev_comments: 'v2: ipsec policies {{adom}}/{{polpkg}} copy to model {{fgt}}'
-              dev_rev_comments:  'v2: ipsec policies {{adom}}/{{polpkg}} copy only'
-              flags: [ copy_only ]
-              pkg: '{{polpkg}}'
-              scope:
-                - name: '{{fgt}}'
-                  vdom: root
-      register: fmgtask
+#    - name: Install polpkg {{polpkg}} to model dev {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/securityconsole/install/package'
+#            data:
+#              adom: '{{adom}}'
+#              adom_rev_comments: 'v2: ipsec policies {{adom}}/{{polpkg}} copy to model {{fgt}}'
+#              dev_rev_comments:  'v2: ipsec policies {{adom}}/{{polpkg}} copy only'
+#              flags: [ copy_only ]
+#              pkg: '{{polpkg}}'
+#              scope:
+#                - name: '{{fgt}}'
+#                  vdom: root
+#      register: fmgtask
 
-    - name: Wait for install polpkg to model dev task
-      fmgr_fact:
-        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
-        facts:
-            selector: 'task_task'
-            params:
-                task: '{{fmgtask.meta.response_data.task}}'
-      register: taskinfo
-      until: taskinfo.meta.response_data.percent == 100
-      retries: 30
-      delay: 5
-      failed_when: taskinfo.meta.response_data.state == 'error'
+#    - name: Wait for install polpkg to model dev task
+#      fmgr_fact:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'

@@ -384,7 +384,7 @@
                       #    set switch-controller-feature nac
                       #    set interface "fortilink"
                       #    set vlanid 4089
-                      next
+                      # next
                       edit "FortiExtender"
                           set vdom "root"
                           set mode dhcp

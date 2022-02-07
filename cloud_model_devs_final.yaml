@@ -373,17 +373,17 @@
                           set interface "fortilink"
                           set vlanid 4093
                       next
-                      edit "onboarding"
-                          set vdom "root"
-                          set ip 169.254.15.1 255.255.255.0
-                          set description "NAC Onboarding VLAN"
-                          set alias "onboarding.fortilink"
-                          set security-mode captive-portal
-                          set device-identification enable
-                          set switch-controller-access-vlan enable
-                          set switch-controller-feature nac
-                          set interface "fortilink"
-                          #set vlanid 4089
+                      #edit "onboarding"
+                      #    set vdom "root"
+                      #    set ip 169.254.15.1 255.255.255.0
+                      #    set description "NAC Onboarding VLAN"
+                      #    set alias "onboarding.fortilink"
+                      #    set security-mode captive-portal
+                      #    set device-identification enable
+                      #    set switch-controller-access-vlan enable
+                      #    set switch-controller-feature nac
+                      #    set interface "fortilink"
+                      #    set vlanid 4089
                       next
                       edit "FortiExtender"
                           set vdom "root"

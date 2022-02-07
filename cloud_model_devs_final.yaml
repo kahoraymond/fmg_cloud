@@ -264,7 +264,8 @@
                       next
                       edit "internal"
                           set vdom "root"
-                          set ip 192.168.99.99/24
+                          set mode dhcp
+                          # set ip 192.168.99.99/24
                           set allowaccess ssh https fgfm ping fabric
                           set description Mgmt
                           set alias Mgmt

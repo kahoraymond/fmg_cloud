@@ -147,4 +147,23 @@
               - name: "{{fgt_name}}"
                 vdom: root
 
+    - name: Add Model FortiSwitch {{fswpoe_name}} to Model Fortigate {{fgt_name}}
+      fmgr_generic:
+        method: add
+        params:
+          - url: /pm/config/device/{{fgt_name}}/vdom/root/switch-controller/managed-switch
+            data:
+              name: "{{fswpoe_name}}"
+              switch-id: "{{fswpoe_sn}}"
+            push: 1
 
+    - name: Assign FortiSwitch (POE) Template to Model FortiSwitch {{fswpoe_name}}
+      fmgr_generic:
+        method: update
+        params:
+          - url: /pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fswpoe_sn}}
+            data:
+              template: "S124E-sw-2"
+            scope member:
+              - name: "{{fgt_name}}"
+                vdom: root

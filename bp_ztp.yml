@@ -142,7 +142,7 @@
         params:
           - url: /pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}
             data:
-              template: "S12eE-sw-1"
+              template: "S124E-sw-1"
             scope member:
               - name: "{{fgt_name}}"
                 vdom: root

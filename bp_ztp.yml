@@ -176,7 +176,7 @@
     params:
       - url: /pm/config/device/{{fgt_name}}/vdom/root/wireless-controller/wtp
         data:
-          name: "{{api_name}}
+          name: "{{api_name}}"
           wtp-id: "{{api_sn}}"
           wtp-profile: "221E"
         push: 1

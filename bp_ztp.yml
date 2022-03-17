@@ -260,7 +260,7 @@
               
 #---------------------------------------------------------------------------------------
 
-     - name: Install polpkg {{pkg}} to model dev {{fgt_name}}
+    - name: Install polpkg {{pkg}} to model dev {{fgt_name}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec

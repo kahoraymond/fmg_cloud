@@ -45,7 +45,7 @@
                   mr: 4
                   patch: 7
                   meta fields:
-                    Address: "{{address}}",
+                    Address: "{{address}}"
                     HOSTNAME: "{{fgt_name}}"
                     LOOPBACK0: "{{loopback0}}"
                     Fairbank: "{{fairbank}}"

@@ -170,7 +170,7 @@
 
 #---------------------------------------------------------------------------------------
 
-- name: Add Model FortiAP (api_name_ to Model FortiGate {{fgt_name}}
+- name: Add Model FortiAP {{api_name}} to Model FortiGate {{fgt_name}}
   fmgr_generic:
     method: add
     params:

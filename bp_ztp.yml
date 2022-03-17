@@ -215,3 +215,39 @@
             scope member:
               - name: "{{fgt_name}}"
                 vdom: root
+                
+#---------------------------------------------------------------------------------------
+
+    - name: Install Configuration to Device DB against Model FortiGate {{fgt_name}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/securityconsole/install/device'
+            data:
+              adom: '{{adom}}'
+              scope:
+                - name: '{{fgt_name}}'
+                  vdom: root
+              flags: 'none'
+      register: fmgtask
+
+    - name: Wait for install polpkg to model dev task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'
+
+
+
+
+
+
+ 

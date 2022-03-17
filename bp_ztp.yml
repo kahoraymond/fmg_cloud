@@ -7,6 +7,8 @@
      ansible_httpapi_validate_certs: False
      ansible_httpapi_port: 443
      
+     pre_script: MODEL_DEVICE_SCRIPT
+     
    
   tasks:
     - name: Generate Access Token From FortiCloud Auth Server.
@@ -22,7 +24,7 @@
 
 #---------------------------------------------------------------------------------------
 
-    - name: Add model device {{adom}}/{{fgt}}
+    - name: Add model device {{adom}}/{{fgt_name}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec
@@ -88,13 +90,17 @@
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
-          - url: '/dvmdb/adom/{{adom}}/device/{{fgt_name}}'
+          - url: '/dvmdb/adom/{{adom}}/device/{{
+          
+          
+          
+          _name}}'
             data:
               flags: [ is_model, linked_to_model ]
               
 
 #---------------------------------------------------------------------------------------
-    - name: Run script {{script_dev}} on model dev {{fgt}}
+    - name: Run script {{script_dev}} on model dev {{fgt_name}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec

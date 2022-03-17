@@ -170,25 +170,25 @@
 
 #---------------------------------------------------------------------------------------
 
-- name: Add Model FortiAP {{api_name}} to Model FortiGate {{fgt_name}}
-  fmgr_generic:
-    method: add
-    params:
-      - url: /pm/config/device/{{fgt_name}}/vdom/root/wireless-controller/wtp
-        data:
-          name: "{{api_name}}"
-          wtp-id: "{{api_sn}}"
-          wtp-profile: "221E"
-        push: 1
+    - name: Add Model FortiAP {{api_name}} to Model FortiGate {{fgt_name}}
+      fmgr_generic:
+        method: add
+        params:
+          - url: /pm/config/device/{{fgt_name}}/vdom/root/wireless-controller/wtp
+            data:
+              name: "{{api_name}}"
+              wtp-id: "{{api_sn}}"
+              wtp-profile: "221E"
+            push: 1
 
-- name: Assign FortiAP Profile to Model FortiAP {{api_name}}
-  fmgr_generic:
-    method: update
-    params:
-      - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{api_sn}}
-        data:
-          name: "{{api_name}}"
-          wtp-profile: "221E"
-        scope member:
-          - name: "{{fgt_name}}"
-            vdom: root
+    - name: Assign FortiAP Profile to Model FortiAP {{api_name}}
+      fmgr_generic:
+        method: update
+        params:
+          - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{api_sn}}
+            data:
+              name: "{{api_name}}"
+              wtp-profile: "221E"
+            scope member:
+              - name: "{{fgt_name}}"
+                vdom: root

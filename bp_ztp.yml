@@ -245,9 +245,17 @@
       delay: 5
       failed_when: taskinfo.meta.response_data.state == 'error'
 
+#---------------------------------------------------------------------------------------
 
 
-
-
-
+    - name: Assign Model dev {{fgt_name}} to BP device Group
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/dvmdb/adom/{{adom}}/group/BP/object member'
+            data:
+              name: '{{fgt_name}}'
+              vdom: root
+              
  

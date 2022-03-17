@@ -132,7 +132,7 @@
         params:
           - url: /pm/config/device/{{fgt_name}}/vdom/root/switch-controller/managed-switch
             data:
-              name: {{fsw_name}}
+              name: "{{fsw_name}}"
               switch-id: "{{fsw_sn}}"
             push: 1
 

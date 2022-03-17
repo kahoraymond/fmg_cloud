@@ -44,6 +44,28 @@
                   os_ver: '6.0'
                   mr: 4
                   patch: 7
+                  meta fields:
+                    Address: "{{address}}",
+                    HOSTNAME: "{{fgt_name}}",
+                    LOOPBACK0: "{{loopback0}}",
+                    Fairbank: "{{fairbank}}",
+                    GSS-POS : "{{gss-pos}}",
+                    GSS-INTERNET: "{{gss-internet}}",
+                    Fairbank-NET: "{{fairbank-net}}",
+                    GSS-POS-NET: "{{gss-pos-net}}",
+                    GSS-INTERNET-NET: "{{gss-internet-net}}",
+                    VPN_DSL_GH_IP: "10.100.1.{{shopid}}",
+                    VPN_DSL_FRA_IP: "10.100.2.{{shopid}}",
+                    VPN_LTE_GH_IP: "10.100.3.{{shopid}}",
+                    VPN_LTE_FRA_IP: "10.100.4.{{shopid}}",
+                    FGT_SN: "{{fgt_sn}}",
+                    DSL_PSK: "{{dsl_psk}}",
+                    DSL_USER: "{{dsl_user}}",
+                    DSL_PASSWORD: "{{dsl_password}}",
+                    LTE_PSK: "{{lte_psk}}",
+                    LTE_USER: "{{lte_user}}",
+                    LTE_PASSWORD: "{{lte_password}}",
+            
                  
       register: fmgtask
 
@@ -70,6 +92,7 @@
             data:
               flags: [ is_model, linked_to_model ]
               
+
 #---------------------------------------------------------------------------------------
     - name: Run script {{script_dev}} on model dev {{fgt}}
       fmgr_generic:

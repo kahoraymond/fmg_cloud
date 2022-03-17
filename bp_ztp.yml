@@ -258,4 +258,34 @@
               name: '{{fgt_name}}'
               vdom: root
               
- 
+#---------------------------------------------------------------------------------------
+
+     - name: Install polpkg {{pkg}} to model dev {{fgt_name}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/securityconsole/install/package'
+            data:
+              adom: '{{adom}}'
+              adom_rev_comments: 'v1: prepped {{adom}}/{{pkg}} copy to model {{fgt_name}}'
+              dev_rev_comments:  'v1: prepped {{adom}}/{{pkg}} copy only'
+              flags: [ copy_only ]
+              pkg: '{{pkg}}'
+              scope:
+                - name: '{{fgt_name}}'
+                  vdom: root
+      register: fmgtask
+
+    - name: Wait for install polpkg to model dev task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'

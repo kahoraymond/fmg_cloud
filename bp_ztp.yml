@@ -90,11 +90,7 @@
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: update
         params:
-          - url: '/dvmdb/adom/{{adom}}/device/{{
-          
-          
-          
-          _name}}'
+          - url: '/dvmdb/adom/{{adom}}/device/{{fgt}}'
             data:
               flags: [ is_model, linked_to_model ]
               

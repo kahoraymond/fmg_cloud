@@ -181,18 +181,6 @@
               wtp-profile: "221E"
             push: 1
 
-    - name: Assign FortiAP Profile 221E to Model FortiAP {{api_name}}
-      fmgr_generic:
-        method: update
-        params:
-          - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{api_sn}}
-            data:
-              name: "{{api_name}}"
-              wtp-profile: "221E"
-            scope member:
-              - name: "{{fgt_name}}"
-                vdom: root
-
     - name: Add Outdoor Model FortiAP {{ape_name}} to Model FortiGate {{fgt_name}}
       fmgr_generic:
         method: add
@@ -204,18 +192,7 @@
               wtp-profile: "222E"
             push: 1
 
-    - name: Assign FortiAP Profile 222E to Model FortiAP {{ape_name}}
-      fmgr_generic:
-        method: update
-        params:
-          - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{ape_sn}}
-            data:
-              name: "{{ape_name}}"
-              wtp-profile: "222E"
-            scope member:
-              - name: "{{fgt_name}}"
-                vdom: root
-                
+
 #---------------------------------------------------------------------------------------
 
     - name: Install Configuration to Device DB against Model FortiGate {{fgt_name}}
@@ -232,7 +209,7 @@
               flags: 'none'
       register: fmgtask
 
-    - name: Wait for install polpkg to model dev task
+    - name: Wait for install Device DB to model dev task
       fmgr_fact:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         facts:
@@ -247,7 +224,31 @@
 
 #---------------------------------------------------------------------------------------
 
-
+    - name: Assign FortiAP Profile 221E to Model FortiAP {{api_name}}
+      fmgr_generic:
+        method: update
+        params:
+          - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{api_sn}}
+            data:
+              name: "{{api_name}}"
+              wtp-profile: "221E"
+            scope member:
+              - name: "{{fgt_name}}"
+                vdom: root
+                
+    - name: Assign FortiAP Profile 222E to Model FortiAP {{ape_name}}
+      fmgr_generic:
+        method: update
+        params:
+          - url: /pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{ape_sn}}
+            data:
+              name: "{{ape_name}}"
+              wtp-profile: "222E"
+            scope member:
+              - name: "{{fgt_name}}"
+                vdom: root
+#---------------------------------------------------------------------------------------                
+                
     - name: Assign Model dev {{fgt_name}} to BP device Group
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
@@ -260,6 +261,37 @@
               
 #---------------------------------------------------------------------------------------
 
+    - name: Install Configuration to Device DB against Model FortiGate {{fgt_name}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/securityconsole/install/device'
+            data:
+              adom: '{{adom}}'
+              scope:
+                - name: '{{fgt_name}}'
+                  vdom: root
+              flags: 'none'
+      register: fmgtask
+
+    - name: Wait for install Device DB to model dev task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'
+
+
+              
+#---------------------------------------------------------------------------------------
+
     - name: Install polpkg {{pkg}} to model dev {{fgt_name}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
@@ -268,10 +300,8 @@
           - url: '/securityconsole/install/package'
             data:
               adom: '{{adom}}'
-              adom_rev_comments: 'v1: prepped {{adom}}/{{pkg}} copy to model {{fgt_name}}'
-              dev_rev_comments:  'v1: prepped {{adom}}/{{pkg}} copy only'
-              flags: [ copy_only ]
               pkg: '{{pkg}}'
+              flags: 'none'
               scope:
                 - name: '{{fgt_name}}'
                   vdom: root

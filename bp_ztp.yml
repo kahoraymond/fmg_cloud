@@ -1,0 +1,1251 @@
+- hosts: all
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+     ansible_httpapi_use_ssl: True
+     ansible_httpapi_validate_certs: False
+     ansible_httpapi_port: 443
+     
+     fsw_nm: FSW108E
+     fsw_tpt: FSW108E
+     fap_prof: AP-P
+     sdwan: SDWan
+     sdwan_tpt: SDWAN_template
+     ipsec_tpt: IPsec_template
+     ipsec_tun: ipsec_tun
+     script_adom: prep_adom
+     script_dynmap: config_dynmap
+     script_dev: config_modeldevs
+     polpkg: BP_PP
+     ipsec_adom_script: ipsec_adom_script
+     
+   
+  tasks:
+    - name: Generate Access Token From FortiCloud Auth Server.
+      uri:
+        url: https://customerapiauth.fortinet.com/api/v1/oauth/token/
+        method: POST
+        body_format: json
+        return_content: true
+        headers:
+          Content-Type: application/json
+        body: '{"username": "{{ FORTICLOUD_APIID }}", "password": "{{ FORTICLOUD_PASSWD }}", "client_id": "FortiManager", "grant_type": "password"}'
+      register: tokeninfo
+#
+## add model device
+#
+    - name: Add model device {{adom}}/{{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        #bypass_validation: True
+        params:
+          - url: '/dvm/cmd/add/device'
+            data:
+              adom: '{{adom}}'
+              flags: [ create_task , nonblocking ]
+              device:
+                  adm_usr:  admin
+                  adm_pass: '{{fgt_pw}}'
+                  desc:
+                  mgmt_mode: 'fmg'
+                  model_device: 1
+                  flags: [ is_model, linked_to_model ]
+                  add_model: 1
+                  name: '{{fgt}}'
+                  sn: "{{fgt_sn}}"
+                  os_type: 'fos'
+                  os_ver: '6.0'
+                  mr: 4
+                  patch: 6
+                  # prefer_img_ver: "6.4.6-b1879"
+      register: fmgtask
+
+    - name: Wait for add device task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.taskid}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
+
+     
+    - name: Set auto-link mode on model device
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: update
+        params:
+          - url: '/dvmdb/adom/{{adom}}/device/{{fgt}}'
+            data:
+              flags: [ is_model, linked_to_model ]
+#------------------------------------------------------------------
+    - name: Set {{adom}}/{{polpkg}} install target => {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/pm/pkg/adom/{{adom}}/{{polpkg}}'
+            data:
+              'scope member':
+                - name: '{{fgt}}'
+                  vdom: root
+#------------------------------------------------------------------
+    - name: Create script {{script_dev}} to config model dev {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/dvmdb/adom/{{adom}}/script'
+            data:
+              - name: '{{script_dev}}'
+                target: device_database
+                type: cli
+                content: |
+                  config system admin
+                     edit "admin"
+                        set password {{fgt_pw}}
+                        set gui-ignore-release-overview-version "6.4.1"
+                        #:undo: delete
+                      
+                     next
+                  end
+                  config system console
+                     set output standard
+                  end
+                  config system stp
+                     set switch-priority 4096
+                  end
+                  config switch-controller traffic-policy
+                      edit "quarantine"
+                          set description "Rate control for quarantined traffic"
+                          set guaranteed-bandwidth 163840
+                          set guaranteed-burst 8192
+                          set maximum-burst 163840
+                          set cos-queue 0
+                      next
+                      edit "sniffer"
+                          set description "Rate control for sniffer mirrored traffic"
+                          set guaranteed-bandwidth 50000
+                          set guaranteed-burst 8192
+                          set maximum-burst 163840
+                          set cos-queue 0
+                      next
+                  end
+                  config wireless-controller timers
+                      set sta-locate-timer 300
+                  end
+                  config wireless-controller setting
+                      set wfa-compatibility enable
+                      set darrp-optimize 86400
+                      set darrp-optimize-schedules "default-darrp-optimize"
+                  end
+                  config wireless-controller qos-profile
+                      edit "default"
+                          set burst enable
+                          set call-admission-control enable
+                          set dscp-wmm-mapping enable
+                          set dscp-wmm-vo 48 56
+                          set dscp-wmm-vi 32 40
+                          set dscp-wmm-be 0 24
+                          set dscp-wmm-bk 8 16
+                      next
+                  end
+                  config wireless-controller wids-profile
+                      edit "default-wids-apscan-enabled"
+                          set sensor-mode both
+                          set ap-scan enable
+                          set ap-bgscan-period 1200
+                          set ap-scan-passive enable
+                          set ap-auto-suppress enable
+                          set wireless-bridge enable
+                          set deauth-broadcast enable
+                          set null-ssid-probe-resp enable
+                          set long-duration-attack enable
+                          set invalid-mac-oui enable
+                          set weak-wep-iv enable
+                          set auth-frame-flood enable
+                          set assoc-frame-flood enable
+                          set spoofed-deauth enable
+                          set asleap-attack enable
+                          set eapol-start-flood enable
+                          set eapol-logoff-flood enable
+                          set eapol-succ-flood enable
+                          set eapol-fail-flood enable
+                          set eapol-pre-succ-flood enable
+                          set eapol-pre-fail-flood enable
+                      next
+                  end
+                  # do:mv?to adom script: user,user.group ?
+                  config system interface
+                      edit "wan1"
+                          set vdom "root"
+                          set role wan
+                          #:this is only for convenience during testing
+                          #:restore:unset allowaccess
+                          set allowaccess fgfm ping https ssh
+                          set arpforward disable
+                          set icmp-send-redirect disable
+                          set icmp-accept-redirect disable
+                          set lldp-reception disable
+                          set lldp-transmission disable
+                          set ap-discover disable
+                          set mode dhcp
+                          set distance 254
+                          set description "Internet"
+                          set dns-server-override disable
+                      next
+                      edit "fortilink"
+                          set vdom "root"
+                          set ip 169.254.1.1 255.255.255.0
+                          set allowaccess ping fabric
+                          set description "Trunk"
+                          set device-identification enable
+                          set stp disable
+                          set lldp-reception enable
+                          set lldp-transmission enable
+                          set role lan
+                          set fortilink enable
+                      next
+                      edit "POS"
+                          set vdom "root"
+                          set ip {{pos_subnet}}.1 255.255.255.0
+                          set allowaccess https ping
+                          set description "POS"
+                          set device-identification enable
+                          set role lan
+                          set interface "fortilink"
+                          set vlanid 100
+                          set color 3
+                      next
+                      edit "SecureWLan"
+                          set vdom "root"
+                          set ip {{securewlan_subnet}}.1 255.255.255.0
+                          set allowaccess ping fabric
+                          set description "SecureWLan"
+                          set device-identification enable
+                          set role lan
+                          set interface "fortilink"
+                          set vlanid 110
+                          set color 2
+                      next
+                      edit "GuestWLan"
+                          set vdom "root"
+                          set ip {{guestwlan_subnet}}.1 255.255.254.0
+                          set allowaccess ping
+                          set description "GuestWLan"
+                          set device-identification enable
+                          set role lan
+                          set interface "fortilink"
+                          set vlanid 200
+                          set color 5
+                          set security-mode captive-portal
+                          set security-external-web "https://region1.purpleportal.net/access/"
+                          set security-redirect-url "https://region1.purpleportal.net/access/?res=success"
+                          #set security-groups "Purple Guests"
+                      next
+                      edit "Isolate_FEX"
+                          set vdom "root"
+                          set ip 169.254.2.1 255.255.255.0
+                          set allowaccess ping fabric
+                          set description "Isolate_FEX"
+                          set device-identification enable
+                          set estimated-upstream-bandwidth 4096
+                          set estimated-downstream-bandwidth 4096
+                          set role lan
+                          set interface "fortilink"
+                          set vlanid 4080
+                          set color 6
+                      next
+                      edit "internal"
+                          set vdom "root"
+                          set mode dhcp
+                          # set ip 192.168.99.99/24
+                          set allowaccess ssh https fgfm ping fabric
+                          set description Mgmt
+                          set alias Mgmt
+                          set lldp-reception disable
+                          set lldp-transmission disable
+                          set stp enable
+                      next
+                      #edit "vsw.fortilink"
+                      #    set vdom "root"
+                      #    set ip 0.0.0.0 0.0.0.0
+                      #    unset allowaccess
+                      #    set description "VLAN 1 - Unused"
+                      #    set alias "Unused"
+                      #    set device-identification enable
+                      #    set role lan
+                      #    set interface "fortilink"
+                      #    set vlanid 1
+                      #    set color 21
+                      #next
+                      edit "default"
+                          set vdom "root"
+                          set alias "default.fortilink"
+                          set switch-controller-feature default-vlan
+                          set interface "fortilink"
+                          set vlanid 1
+                      next
+                      #edit "cam.fortilink"
+                      #    set vdom "root"
+                      #    set description "Forticamera VLAN"
+                      #    set device-identification enable
+                      #    set interface "fortilink"
+                      #    set vlanid 4090
+                      #    set color 3
+                      #next
+                      edit "video"
+                          set vdom "root"
+                          set ip 169.254.13.1 255.255.255.0
+                          set description "Forticamera VLAN"
+                          set alias "video.fortilink"
+                          set device-identification enable
+                          set switch-controller-feature video
+                          set interface "fortilink"
+                          set vlanid 4090
+                      next
+                      #edit "voi.fortilink"
+                      #    set vdom "root"
+                      #    set description "Fortivoice VLAN"
+                      #    set device-identification enable
+                      #    set interface "fortilink"
+                      #    set vlanid 4091
+                      #    set color 12
+                      #next
+                      edit "voice"
+                          set vdom "root"
+                          set ip 169.254.12.1 255.255.255.0
+                          set description "Fortivoice VLAN"
+                          set alias "voice.fortilink"
+                          set device-identification enable
+                          set switch-controller-feature voice
+                          set interface "fortilink"
+                          set vlanid 4091
+                      next
+                      #edit "snf.fortilink"
+                      #    set vdom "root"
+                      #    set ip 169.254.6.1 255.255.254.0
+                      #    set allowaccess ping
+                      #    set description "Sniffer VLAN"
+                      #    set switch-controller-traffic-policy "sniffer"
+                      #    set interface "fortilink"
+                      #    set vlanid 4092
+                      #    set color 24
+                      #next
+                      edit "rspan"
+                          set vdom "root"
+                          set ip 169.254.14.1 255.255.255.0
+                          set description "Sniffer VLAN"
+                          set alias "rspan.fortilink"
+                          set switch-controller-traffic-policy "sniffer"
+                          set switch-controller-feature rspan
+                          set interface "fortilink"
+                          set vlanid 4092
+                      next
+                      #edit "qtn.fortilink"
+                      #    set vdom "root"
+                      #    set ip 169.254.4.1 255.255.255.0
+                      #    set description "Quarantine VLAN"
+                      #    set security-mode captive-portal
+                      #    set device-identification enable
+                      #    set switch-controller-access-vlan enable
+                      #    set color 6
+                      #    set interface "fortilink"
+                      #    set vlanid 4093
+                      #next
+                      edit "quarantine"
+                          set vdom "root"
+                          set ip 169.254.11.1 255.255.255.0
+                          set description "Quarantine VLAN"
+                          set alias "quarantine.fortilink"
+                          set security-mode captive-portal
+                          #set replacemsg-override-group "auth-intf-quarantine"
+                          set device-identification enable
+                          set switch-controller-access-vlan enable
+                          set switch-controller-feature quarantine
+                          set color 6
+                          set interface "fortilink"
+                          set vlanid 4093
+                      next
+                      #edit "onboarding"
+                      #    set vdom "root"
+                      #    set ip 169.254.15.1 255.255.255.0
+                      #    set description "NAC Onboarding VLAN"
+                      #    set alias "onboarding.fortilink"
+                      #    set security-mode captive-portal
+                      #    set device-identification enable
+                      #    set switch-controller-access-vlan enable
+                      #    set switch-controller-feature nac
+                      #    set interface "fortilink"
+                      #    set vlanid 4089
+                      # next
+                      edit "FortiExtender"
+                          set vdom "root"
+                          set mode dhcp
+                          set distance 254
+                          set type fext-wan
+                          set description "FortiExtender Logical"
+                          set device-identification enable
+                          set dns-server-override disable
+                      next
+                  end
+                  config system dhcp server
+                      edit 1
+                          set dns-service default
+                          set default-gateway 192.168.99.99
+                          set netmask 255.255.255.0
+                          set interface "internal"
+                          config ip-range
+                              edit 1
+                                  set start-ip 192.168.99.110
+                                  set end-ip 192.168.99.210
+                              next
+                          end
+                      next
+                      edit 2
+                          set ntp-service local
+                          set default-gateway 169.254.1.1
+                          set netmask 255.255.255.0
+                          set interface "fortilink"
+                          config ip-range
+                              edit 1
+                                  set start-ip 169.254.1.2
+                                  set end-ip 169.254.1.254
+                              next
+                          end
+                          set vci-match enable
+                          set vci-string "FortiSwitch" "FortiExtender"
+                      next
+                      edit 3
+                          set dns-server1 8.8.8.8
+                          set ntp-service default
+                          set default-gateway {{pos_subnet}}.1
+                          set netmask 255.255.255.0
+                          set interface "POS"
+                          set timezone-option specify
+                          config ip-range
+                              edit 1
+                                  set start-ip {{pos_subnet}}.100
+                                  set end-ip {{pos_subnet}}.200
+                              next
+                          end
+                      next
+                      edit 4
+                          set dns-service default
+                          set ntp-service default
+                          set default-gateway {{securewlan_subnet}}.1
+                          set netmask 255.255.255.0
+                          set interface "SecureWLan"
+                          config ip-range
+                              edit 1
+                                  set start-ip {{securewlan_subnet}}.100
+                                  set end-ip {{securewlan_subnet}}.200
+                              next
+                          end
+                          set timezone-option default
+                      next
+                      edit 5
+                          set dns-server1 8.8.8.8
+                          set dns-server2 8.8.4.4
+                          set ntp-service default
+                          set default-gateway {{guestwlan_subnet}}.1
+                          set netmask 255.255.254.0
+                          set interface "GuestWLan"
+                          config ip-range
+                              edit 1
+                                  set start-ip {{guestwlan_subnet}}.10
+                                  set end-ip {{guestwlan_subnet}}.25
+                              next
+                          end
+                          set timezone-option default
+                      next
+                      edit 6
+                          set dns-service default
+                          set ntp-service default
+                          set default-gateway 169.254.2.1
+                          set netmask 255.255.255.0
+                          set interface "Isolate_FEX"
+                          config ip-range
+                              edit 1
+                                  set start-ip 169.254.2.2
+                                  set end-ip 169.254.2.6
+                              next
+                          end
+                          set timezone-option default
+                      next
+                      edit 9
+                          set dns-service default
+                          set default-gateway 169.254.4.1
+                          set netmask 255.255.255.0
+                          set interface "quarantine"
+                          config ip-range
+                              edit 1
+                                  set start-ip 169.254.4.192
+                                  set end-ip 169.254.4.253
+                              next
+                          end
+                          set timezone-option default
+                      next
+                      edit 10
+                          set dns-service default
+                          set default-gateway 169.254.6.1
+                          set netmask 255.255.254.0
+                          set interface "rspan"
+                          config ip-range
+                              edit 1
+                                  set start-ip 169.254.6.208
+                                  set end-ip 169.254.7.253
+                              next
+                          end
+                          set timezone-option default
+                      next
+                  end
+                  config router static
+                      edit 1
+                          set device "wan1"
+                          set dynamic-gateway enable
+                      next
+                      edit 2
+                          set device "FortiExtender"
+                          set dynamic-gateway enable
+                      next
+                  end
+                  config router bgp
+                     set as 65500
+                     set router-id 192.168.1.47
+                     config neighbor
+                         edit "192.168.1.11"
+                             set remote-as 65500
+                         next
+                     end
+                  end
+                  
+                  # sdwan ---------------------------------
+                  #do:moved some to adom, patch device dependent parts here
+                  # also see adom script, a lot of fields can not be set from there
+                  #config system sdwan
+                  #    set status enable
+                  #    set fail-detect enable
+                  #    config members
+                  #        # 1 is set by prep_adom
+                  #        edit 1
+                  #            set interface wan1
+                  #        next
+                  #        edit 2
+                  #            set interface FortiExtender
+                  #        next
+                  #    end
+                  #    config health-check
+                  #        edit "Internet Health Check"
+                  #            set server "8.8.8.8" "4.2.2.2"
+                  #            set interval 5000
+                  #            set update-cascade-interface disable
+                  #            set update-static-route disable
+                  #            set sla-fail-log-period 15
+                  #            set sla-pass-log-period 60
+                  #            set threshold-warning-packetloss 2
+                  #            set threshold-alert-packetloss 5
+                  #            set threshold-warning-latency 100
+                  #            set threshold-alert-latency 250
+                  #            set members 1 2
+                  #            config sla
+                  #                edit 1
+                  #                    set latency-threshold 250
+                  #                    set packetloss-threshold 5
+                  #                next
+                  #            end
+                  #        next
+                  #    end
+                  #    config service
+                  #        edit 1
+                  #            set name "Prefer_Broadband"
+                  #            set mode sla
+                  #            set dst "all"
+                  #            set src "all"
+                  #            config sla
+                  #                edit "Internet Health Check"
+                  #                    set id 1
+                  #                next
+                  #            end
+                  #            set priority-members 1 2
+                  #            set sla-compare-method number
+                  #        next
+                  #    end
+                  #end
+                  end
+
+                  ### FEX 
+                  config extender-controller extender
+                    edit FX04DI5919000094
+                      set authorized enable
+                      config modem1
+                        set ifname "FortiExtender"
+                        #1  set sim1-pin enable
+                        #1  set sim1-pin-code 654321
+                        config auto-switch
+                          set switch-back-time "21:1 "
+                      end
+                    end
+                    next
+                  end
+                  config system global
+                      set fgd-alert-subscription advisory latest-threat
+                      set gui-ipv6 enable
+                      #set gui-lines-per-page 200
+                      set gui-wireless-opensecurity enable
+                      set gui-certificates enable
+                      set revision-backup-on-logout enable
+                      set ssh-kex-sha1 disable
+                      set ssh-mac-weak disable
+                      set fds-statistics disable
+                      set strong-crypto enable
+                      set admin-https-redirect enable
+                      set admin-https-ssl-versions tlsv1-2
+                      set admin-ssh-grace-time 30
+                      set admintimeout 444
+                      set alias {{hostname}}
+                      set hostname {{hostname}}
+                      set dh-params 8192
+                      set pre-login-banner enable
+                      set ssl-static-key-ciphers disable
+                      set switch-controller enable
+                      set fortiextender enable
+                      set wireless-controller enable
+                      set tcp-option disable
+                      set timezone 12
+                      set traffic-priority dscp
+                      set lldp-transmission enable
+                      set lldp-reception enable
+                  end
+                  config system settings
+                      set gui-dns-database enable
+                      set gui-load-balance enable
+                      set gui-multicast-policy enable
+                      set gui-dos-policy enable
+                      set gui-replacement-message-groups enable
+                      set gui-voip-profile enable
+                      #set gui-dynamic-profile-display enable
+                      set gui-local-in-policy enable
+                      set gui-dynamic-routing enable
+                      set gui-sslvpn-personal-bookmarks enable
+                      set gui-sslvpn-realms enable
+                      set gui-policy-based-ipsec enable
+                      #set gui-multiple-utm-profiles enable
+                      set gui-endpoint-control-advanced enable
+                      set gui-fortiap-split-tunneling enable
+                      set gui-webfilter-advanced enable
+                      set gui-advanced-policy enable
+                      set gui-allow-unnamed-policy enable
+                      set gui-email-collection enable
+                      #set gui-domain-ip-reputation enable
+                      set gui-multiple-interface-policy enable
+                  end
+                  config system dns
+                      set primary 8.8.8.8
+                      set secondary 8.8.4.4
+                      set interface-select-method sdwan
+                  end
+                  config system fortiguard
+                      set interface-select-method sdwan
+                  end
+                  config system ntp
+                      set ntpsync enable
+                      set server-mode enable
+                      set interface "fortilink" "Isolate_FEX"
+                  end
+                  config system dns-server
+                      edit "fortilink"
+                          set mode forward-only
+                          set dnsfilter-profile "default"
+                      next
+                  end
+                  config system dns-database
+                      edit "fortiswitch"
+                          set domain "fsw"
+                      next
+                  end
+                  config switch-controller lldp-profile
+                      edit "fortivoice"
+                          set med-tlvs inventory-management network-policy location-identification
+                          set auto-isl disable
+                          config med-network-policy
+                              edit "voice"
+                                  set status enable
+                                  set vlan-intf "voice"
+                                  set dscp 46
+                              next
+                              edit "voice-signaling"
+                                  set status enable
+                                  set vlan-intf "voice"
+                                  set dscp 46
+                              next
+                              edit "guest-voice"
+                              next
+                              edit "guest-voice-signaling"
+                              next
+                              edit "softphone-voice"
+                              next
+                              edit "video-conferencing"
+                              next
+                              edit "streaming-video"
+                              next
+                              edit "video-signaling"
+                              next
+                          end
+                      next
+                  end
+                  config switch-controller switch-profile
+                      edit "default"
+                          set login-passwd-override enable
+                          set login-passwd fortinet
+                      next
+                  end
+                  config switch-controller security-policy local-access
+                      edit "default"
+                          set mgmt-allowaccess https ping ssh snmp
+                          set internal-allowaccess https ping ssh snmp
+                      next
+                  end
+                  
+
+    - name: Run script {{script_dev}} on model dev {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/dvmdb/adom/{{adom}}/script/execute'
+            data:
+              adom: '{{adom}}'
+              scope:
+                - name: '{{fgt}}'
+                  vdom: global
+              script: '{{script_dev}}'
+
+      register: fmgtask
+
+    - name: Wait for run script on model device task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'
+
+# run on adom -----------------------------------------------
+    - name: Create script {{script_dynmap}} to configure adom {{adom}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: set
+        params:
+          - url: '/dvmdb/adom/{{adom}}/script'
+            data:
+              - name: '{{script_dynmap}}'
+                target: adom_database
+                type: cli
+                content: |
+                  # dynamic mappings --------------------------------- 
+                  config dynamic interface
+                      edit "wwan"
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set local-intf "FortiExtender"
+                              next
+                          end
+                          #set defmap-intf FortiExtender
+                      next
+                      edit "POS"
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set local-intf "POS"
+                              next
+                          end
+                          #set defmap-intf POS
+                      next
+                      edit "SecureWLan"
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set local-intf "SecureWLan"
+                              next
+                          end
+                          #set defmap-intf SecureWLan
+                      next
+                      edit "GuestWLan"
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set local-intf "GuestWLan"
+                              next
+                          end
+                          #set defmap-intf GuestWLan
+                      next
+                      edit "Isolate_FEX"
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set local-intf Isolate_FEX
+                              next
+                          end
+                          #set defmap-intf Isolate_FEX
+                      next
+                  end
+                  config fsp vlan
+                      edit "POS"
+                          set vlanid 100
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set _dhcp-status enable
+                                  config interface
+                                      set ip {{pos_subnet}}.1 255.255.255.0
+                                      set vlanid 100
+                                  end
+                                  config dhcp-server
+                                      set id 3
+                                      set default-gateway {{pos_subnet}}.1
+                                      set netmask 255.255.255.0
+                                      set dns-server1 8.8.8.8
+                                      set ntp-service default
+                                      config ip-range
+                                          edit 1
+                                              set start-ip {{pos_subnet}}.100
+                                              set end-ip {{pos_subnet}}.200
+                                          next
+                                      end
+                                      set timezone-option specify
+                                  end
+                              next
+                          end
+                      next
+                      edit "SecureWLan"
+                          set vlanid 110
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set _dhcp-status enable
+                                  config interface
+                                      set ip {{securewlan_subnet}}.1 255.255.255.0
+                                      set vlanid 110
+                                  end
+                                  config dhcp-server
+                                      set id 4
+                                      set default-gateway {{securewlan_subnet}}.1
+                                      set netmask 255.255.255.0
+                                      set dns-service default
+                                      set ntp-service default
+                                      config ip-range
+                                          edit 1
+                                              set start-ip {{securewlan_subnet}}.100
+                                              set end-ip {{securewlan_subnet}}.200
+                                          next
+                                      end
+                                      set timezone-option default
+                                  end
+                              next
+                          end
+                      next
+                      edit "GuestWLan"
+                          set vlanid 200
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set _dhcp-status enable
+                                  config interface
+                                      set ip {{guestwlan_subnet}}.1 255.255.254.0
+                                      set vlanid 200
+                                  end
+                                  config dhcp-server
+                                      set id 5
+                                      set default-gateway {{guestwlan_subnet}}.1
+                                      set netmask 255.255.254.0
+                                      set dns-service default
+                                      set ntp-service default
+                                      config ip-range
+                                          edit 1
+                                              set start-ip {{guestwlan_subnet}}.10
+                                              set end-ip {{guestwlan_subnet}}.25
+                                          next
+                                      end
+                                      set timezone-option default
+                                  end
+                              next
+                          end
+                      next
+                      edit "Isolate_FEX"
+                          set vlanid 4080
+                          set _dhcp-status enable
+                          config interface
+                              set ip 169.254.2.1 255.255.255.0
+                              set allowaccess ping fabric
+                              set description "Isolate_FEX"
+                              set device-identification enable
+                              set role lan
+                          end
+                          config dhcp-server
+                              set id 2
+                              set default-gateway 169.254.2.1
+                              set netmask 255.255.255.0
+                              set dns-service default
+                              set ntp-service default
+                              config ip-range
+                                  edit 1
+                                      set start-ip 169.254.2.2
+                                      set end-ip 169.254.2.6
+                                  next
+                              end
+                          end
+                      next
+                      edit "BackOffice"
+                          set vlanid 120
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set _dhcp-status enable
+                                  config interface
+                                      set ip {{backoffice_subnet}}.1 255.255.255.0
+                                      set vlanid 120
+                                  end
+                                  config dhcp-server
+                                      set id 7
+                                      set default-gateway {{backoffice_subnet}}.1
+                                      set netmask 255.255.255.0
+                                      set dns-service default
+                                      set ntp-service default
+                                      config ip-range
+                                          edit 1
+                                              set start-ip {{backoffice_subnet}}.2
+                                              set end-ip {{backoffice_subnet}}.254
+                                          next
+                                      end
+                                      set timezone-option default
+                                  end
+                              next
+                          end
+                      next
+                      edit "IoT"
+                          set vlanid 130
+                          config dynamic_mapping
+                              edit "{{fgt}}"-"root"
+                                  set _dhcp-status enable
+                                  config interface
+                                      set ip {{iot_subnet}}.1 255.255.255.0
+                                      set vlanid 130
+                                  end
+                                  config dhcp-server
+                                      set id 8
+                                      set default-gateway {{iot_subnet}}.1
+                                      set netmask 255.255.255.0
+                                      set dns-service default
+                                      set ntp-service default
+                                      config ip-range
+                                          edit 1
+                                              set start-ip {{iot_subnet}}.2
+                                              set end-ip {{iot_subnet}}.254
+                                          next
+                                      end
+                                      set timezone-option default
+                                  end
+                              next
+                          end
+                      next
+                  end
+                  #2:config vpnmgr node
+                  #2:  edit 1
+                  #2:    set _scope "FL-KeyWest"-"root"
+                  #2:  next
+                  #2:end
+                  #2:# config platform mapping # who/when does it?
+
+    - name: Run script {{script_dynmap}} on adom {{adom}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/dvmdb/adom/{{adom}}/script/execute'
+            data:
+              adom: '{{adom}}'
+              package: '{{polpkg}}'
+              script: '{{script_dynmap}}'
+
+      register: fmgtask
+
+    - name: Wait for run script {{script_dynmap}} on adom {{adom}}
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'
+
+### FSW -------------------------------------------------------
+#
+#    - name: Create model FSW
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: set # update add
+#        params:
+#          - url: '/pm/config/device/{{fgt}}/vdom/root/switch-controller/managed-switch'
+#            push: 1             # auto-copy to (model) fgt
+#            data:
+#              name: '{{fsw_nm}}'
+#              switch-id: '{{fsw_sn}}'
+#              fsw-wan1-peer: fortilink
+#
+#          - url: '/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}'
+#            data:
+#              name: '{{fsw_nm}}'
+#              template: '{{fsw_tpt}}'
+
+#    - name: Assign device and template to model FSW
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: update
+#        params:
+#          - url: "/pm/config/adom/{{adom}}/obj/fsp/managed-switch/{{fsw_sn}}"
+#            'scope member':
+#              - name: '{{fgt}}'
+#                vdom: root
+#            data: # S108EP5918009182
+#              name: '{{fsw_nm}}'
+#              template: '{{fsw_tpt}}'
+#              #1prefer-img-ver: "6.4.5-b00461"
+
+### FAP -------------------------------------------------------
+    - name: Create model FAP
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: add
+        params:
+          - url: '/pm/config/device/{{fgt}}/vdom/root/wireless-controller/wtp'
+            push: 1
+            data:
+              name: '{{fap}}'
+              wtp-id: '{{fap_sn}}'
+              wtp-profile: '{{fap_prof}}'
+
+      ignore_errors: yes # 0690745
+
+
+    - name: On model AP, set device mapping to {{fgt}} and template to {{fap_prof}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: update
+        params:
+          - url: '/pm/config/adom/{{adom}}/obj/wireless-controller/wtp/{{fap_sn}}'
+            'scope member':
+              name: '{{fgt}}'
+              vdom: root
+            data:
+              name: '{{fap}}'
+              wtp-id: '{{fap_sn}}'
+              wtp-profile: '{{fap_prof}}' 
+
+      ignore_errors: yes # 0690745
+
+### SDWAN -------------------------------------------------------
+    - name: Assign {{fgt}} to {{sdwan_tpt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: update
+        params:
+          - url: '/pm/wanprof/adom/{{adom}}/{{sdwan_tpt}}'
+            data:
+              name: '{{sdwan_tpt}}'
+              'scope member':
+                - name: '{{fgt}}'
+                  vdom: root
+              type: wanprof
+
+
+
+### polpkg install to model dev ---------------------------------
+
+    - name: Install polpkg {{polpkg}} to model dev {{fgt}}
+      fmgr_generic:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        method: exec
+        params:
+          - url: '/securityconsole/install/package'
+            data:
+              adom: '{{adom}}'
+              adom_rev_comments: 'v1: prepped {{adom}}/{{polpkg}} copy to model {{fgt}}'
+              dev_rev_comments:  'v1: prepped {{adom}}/{{polpkg}} copy only'
+              flags: [ copy_only ]
+              pkg: '{{polpkg}}'
+              scope:
+                - name: '{{fgt}}'
+                  vdom: root
+      register: fmgtask
+
+    - name: Wait for install polpkg to model dev task
+      fmgr_fact:
+        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+        facts:
+            selector: 'task_task'
+            params:
+                task: '{{fmgtask.meta.response_data.task}}'
+      register: taskinfo
+      until: taskinfo.meta.response_data.percent == 100
+      retries: 30
+      delay: 5
+      failed_when: taskinfo.meta.response_data.state == 'error'
+### IPsec
+#    - name: assign IPsec template to device {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: set
+#        params:
+#          - url: '/pm/template/adom/{{adom}}'
+#            data:
+#              name: '{{ipsec_tpt}}'
+#              type: pkg
+#              'scope member':
+#                - name: '{{fgt}}'
+#                  vdom: root
+#              'template setting':
+#                stype: ipsec
+#                widgets: [ ipsec ]
+
+### Install template to model device 1st, then configure adom dyn intf and policies, then install PP
+
+#    - name: Install template to model dev {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/securityconsole/install/device'
+#            data:
+#              adom: '{{adom}}'
+#              dev_rev_comments:  'v1: {{ipsec_tpt}} to {{fgt}}'
+#              #flags: [ none ]
+#              scope:
+#                - name: '{{fgt}}'
+#                 vdom: root
+#      register: fmgtask
+#
+#    - name: Wait for device install to task
+#      fmgr_fact:
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'
+
+### do adom now, dyn_intf, policies -----------------------------------------------
+#    - name: Create script {{ipsec_adom_script}} to configure adom {{adom}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: set
+#        params:
+#          - url: '/dvmdb/adom/{{adom}}/script'
+#            data:
+#              - name: '{{ipsec_adom_script}}'
+#                target: adom_database
+#                type: cli
+#                content: |
+#                  config dynamic interface
+#                      edit "{{ipsec_tun}}"
+#                          config dynamic_mapping
+#                              edit "{{fgt}}"-"root"
+#                                  set local-intf {{ipsec_tun}}
+#                              next
+#                          end
+#                          #set default-mapping enable
+#                          #set defmap-intf "{{ipsec_tun}}"
+#                      next
+#                  end
+#                  #2:# config platform mapping ? who/when does this
+#                  config firewall policy
+#                      edit 0
+#                          set name "{{ipsec_tun}} out"
+#                          set srcintf "{{ipsec_tun}}"
+#                          set dstintf "any"
+#                          set srcaddr "all"
+#                          set dstaddr "all"
+#                          set action accept
+#                          set schedule "always"
+#                          set service "ALL"
+#                          set nat enable
+#                      next
+#                      edit 0
+#                          set name "{{ipsec_tun}} in"
+#                          set srcintf "any"
+#                          set dstintf "{{ipsec_tun}}"
+#                          set srcaddr "all"
+#                          set dstaddr "all"
+#                          set action accept
+#                          set schedule "always"
+#                          set service "ALL"
+#                          set nat enable
+#                      next
+#                  end
+
+#    - name: run script {{ipsec_adom_script}} on adom {{adom}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/dvmdb/adom/{{adom}}/script/execute'
+#            data:
+#              adom: '{{adom}}'
+#              package: '{{polpkg}}'
+#              script: '{{ipsec_adom_script}}'
+
+#      register: fmgtask
+
+#    - name: wait for run script on adom task
+#      fmgr_fact:
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'
+
+#### re-install polpkg to model dev with the new ipsec policies
+
+#    - name: Install polpkg {{polpkg}} to model dev {{fgt}}
+#      fmgr_generic:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        method: exec
+#        params:
+#          - url: '/securityconsole/install/package'
+#            data:
+#              adom: '{{adom}}'
+#              adom_rev_comments: 'v2: ipsec policies {{adom}}/{{polpkg}} copy to model {{fgt}}'
+#              dev_rev_comments:  'v2: ipsec policies {{adom}}/{{polpkg}} copy only'
+#              flags: [ copy_only ]
+#              pkg: '{{polpkg}}'
+#              scope:
+#                - name: '{{fgt}}'
+#                  vdom: root
+#      register: fmgtask
+
+#    - name: Wait for install polpkg to model dev task
+#      fmgr_fact:
+#        forticloud_access_token: '{{ tokeninfo.json.access_token }}'
+#        facts:
+#            selector: 'task_task'
+#            params:
+#                task: '{{fmgtask.meta.response_data.task}}'
+#      register: taskinfo
+#      until: taskinfo.meta.response_data.percent == 100
+#      retries: 30
+#      delay: 5
+#      failed_when: taskinfo.meta.response_data.state == 'error'

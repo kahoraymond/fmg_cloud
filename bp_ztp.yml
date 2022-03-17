@@ -96,7 +96,7 @@
               
 
 #---------------------------------------------------------------------------------------
-    - name: Run script {{script_dev}} on model dev {{fgt_name}}
+    - name: Run script {{pre_script}} on model dev {{fgt_name}}
       fmgr_generic:
         forticloud_access_token: '{{ tokeninfo.json.access_token }}'
         method: exec

@@ -33,8 +33,6 @@
               adom: '{{adom}}'
               flags: [ create_task , nonblocking ]
               device:
-                  adm_usr:  admin
-                  adm_pass: '{{fgt_pw}}'
                   desc:
                   mgmt_mode: 'fmg'
                   model_device: 1
